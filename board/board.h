@@ -30,11 +30,38 @@
  * Setup for STMicroelectronics STM32F769I-Discovery board.
  */
 
+/* 
+ * 1 = STM32F4 Discovery board
+ * 0 = Vanlift hardware 
+ */
+#if 1
+
+/*
+ * Board identifier.
+ */
+#define BOARD_ST_STM32F4_DISCOVERY
+#define BOARD_NAME                  "STMicroelectronics STM32F4-Discovery"
+
+/*
+ * Board oscillators-related settings.
+ * NOTE: LSE not fitted.
+ */
+#if !defined(STM32_LSECLK)
+#define STM32_LSECLK                0U
+#endif
+
+#if !defined(STM32_HSECLK)
+#define STM32_HSECLK                8000000U
+#endif
+
+#else
+
 /*
  * Board identifier.
  */
 #define BOARD_MAIN_CONTROLLER
 #define BOARD_NAME                  "Main controller"
+
 
 /*
  * Board oscillators-related settings.
@@ -48,6 +75,8 @@
 
 #if !defined(STM32_HSECLK)
 #define STM32_HSECLK                25000000U
+#endif
+
 #endif
 
 /*

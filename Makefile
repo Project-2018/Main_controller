@@ -87,6 +87,7 @@ PROJECT = main_controller
 
 # Imported source files and paths
 CHIBIOS = ../../ChibiOS_18.2.0
+
 include board/board.mk
 
 # Startup files.
@@ -99,9 +100,15 @@ include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
 # Other files (optional).
-#include $(CHIBIOS)/test/lib/test.mk
-#include $(CHIBIOS)/test/rt/rt_test.mk
-#include $(CHIBIOS)/test/oslib/oslib_test.mk
+include $(CHIBIOS)/test/lib/test.mk
+include $(CHIBIOS)/test/rt/rt_test.mk
+include $(CHIBIOS)/test/oslib/oslib_test.mk
+include $(CHIBIOS)/os/hal/lib/streams/streams.mk
+include $(CHIBIOS)/os/various/shell/shell.mk
+# Submodules.
+SUBMODULE = ./submodules
+include $(SUBMODULE)/ESC_control/esc_control.mk
+# Other files (optional).
 
 # Define linker script file here
 LDSCRIPT= $(STARTUPLD)/STM32F407xG.ld
@@ -116,7 +123,12 @@ CSRC = $(STARTUPSRC) \
        $(PLATFORMSRC) \
        $(BOARDSRC) \
        $(TESTSRC) \
-       main.c
+       $(STREAMSSRC) \
+       $(SHELLSRC) \
+       $(ESCCONTROLSRC) \
+       main.c \
+       console.c \
+       usbcfg.c 
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -149,7 +161,11 @@ ASMXSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 INCDIR = $(CHIBIOS)/os/license \
          $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
          $(HALINC) $(PLATFORMINC) $(BOARDINC) $(TESTINC) \
+         $(STREAMSINC) $(SHELLINC) \
+         $(CHIBIOS)/os/hal/lib/streams \
+         $(CHIBIOS)/os/various/devices_lib/accel \
          $(CHIBIOS)/os/various \
+         $(ESCCONTROLINC) \
          os
 
 #

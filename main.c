@@ -16,18 +16,26 @@
 
 #include "ch.h"
 #include "hal.h"
+#include "esc_comm.h"
+#include "console.h"
 
 /*
- * Red LED blinker thread, times are in milliseconds.
+ * Blinker thread.
  */
-static THD_WORKING_AREA(waThread1, 128);
-static THD_FUNCTION(Thread1, arg) {
+static THD_WORKING_AREA(thread1_wa, 128);
+static THD_FUNCTION(thread1, p) {
 
-  (void)arg;
-  chRegSetThreadName("thd_1");
-  while (true) {
+  (void)p;
+  chRegSetThreadName("blinker");
+  while (TRUE) {
+    systime_t time;
+    time = 500;
 
-    chThdSleepMilliseconds(500);
+    palSetPad(GPIOD, GPIOD_STAT_LED);
+    chThdSleepMilliseconds(time/20);
+    palClearPad(GPIOD, GPIOD_STAT_LED);
+    chThdSleepMilliseconds(time);
+
   }
 }
 
@@ -47,14 +55,25 @@ int main(void) {
   chSysInit();
 
   /*
-   * Creates the blinker thread.
+   * Shell manager initialization.
    */
-  chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO, Thread1, NULL);
+  consoleInit();
+
+  /* 
+   * Initialization of ESC controlling
+   */
+  ESC_ControlInit();
 
   /*
-   * Normal main() thread activity, in this demo it does nothing.
+   * Creates the blinker thread.
+   */
+  chThdCreateStatic(thread1_wa, sizeof(thread1_wa), NORMALPRIO, thread1, NULL);
+
+  /* 
+   * Main loop where only the shell is handled
    */
   while (true) {
-    chThdSleepMilliseconds(500);
+    consoleStart();
+    chThdSleepMilliseconds(1000);
   }
 }
