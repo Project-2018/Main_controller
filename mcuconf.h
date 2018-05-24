@@ -38,7 +38,7 @@
  * 1 = STM32F4 Discovery board
  * 0 = Vanlift hardware 
  */
-#if 1
+#if 0
 
 /*
  * HAL driver system settings.

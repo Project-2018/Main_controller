@@ -34,7 +34,7 @@
  * 1 = STM32F4 Discovery board
  * 0 = Vanlift hardware 
  */
-#if 1
+#if 0
 
 /*
  * Board identifier.
@@ -94,10 +94,10 @@
  * IO pins assignments.
  */
 #define GPIOA_PIN0                  0U
-#define GPIOA_UP_1                  1U
+#define GPIOA_BTN_UP                1U
 #define GPIOA_DISP_TX               2U
 #define GPIOA_DISP_RX               3U
-#define GPIOA_UP_2                  4U
+#define GPIOA_BTN_DOWN              4U
 #define GPIOA_SPI1_SCK              5U
 #define GPIOA_SPI1_MISO             6U
 #define GPIOA_SPI1_MOSI             7U
@@ -110,8 +110,8 @@
 #define GPIOA_SWDCLK                14U
 #define GPIOA_PIN15                 15U
 
-#define GPIOB_DOWN_1                0U
-#define GPIOB_DOWN_2                1U
+#define GPIOB_LIFTING_SPEED_UP      0U
+#define GPIOB_LIFTING_SPEED_DOWN    1U
 #define GPIOB_PIN2                  2U
 #define GPIOB_PIN3                  3U
 #define GPIOB_PIN4                  4U
@@ -249,10 +249,10 @@
 /*
  * IO lines assignments.
  */
-#define LINE_UP_1                   PAL_LINE(GPIOA, 1U)
+#define LINE_BTN_UP                 PAL_LINE(GPIOA, 1U)
 #define LINE_DISP_TX                PAL_LINE(GPIOA, 2U)
 #define LINE_DISP_RX                PAL_LINE(GPIOA, 3U)
-#define LINE_UP_2                   PAL_LINE(GPIOA, 4U)
+#define LINE_BTN_DOWN               PAL_LINE(GPIOA, 4U)
 #define LINE_SPI1_SCK               PAL_LINE(GPIOA, 5U)
 #define LINE_SPI1_MISO              PAL_LINE(GPIOA, 6U)
 #define LINE_SPI1_MOSI              PAL_LINE(GPIOA, 7U)
@@ -264,8 +264,8 @@
 #define LINE_SWDIO                  PAL_LINE(GPIOA, 13U)
 #define LINE_SWDCLK                 PAL_LINE(GPIOA, 14U)
 
-#define LINE_DOWN_1                 PAL_LINE(GPIOB, 0U)
-#define LINE_DOWN_2                 PAL_LINE(GPIOB, 1U)
+#define LINE_LIFTING_SPEED_UP       PAL_LINE(GPIOB, 0U)
+#define LINE_LIFTING_SPEED_DOWN     PAL_LINE(GPIOB, 1U)
 #define LINE_DISP_LED4              PAL_LINE(GPIOB, 6U)
 #define LINE_DISP_LED3              PAL_LINE(GPIOB, 7U)
 #define LINE_DISP_LED2              PAL_LINE(GPIOB, 8U)
@@ -338,10 +338,10 @@
 /*
  * GPIOA setup:
  * All input with pull-up except:
- * PA1  - UP_1                      (analog)
+ * PA1  - BTN_UP                    (analog) - (input)
  * PA2  - DISP_TX                   (alternate 7)
  * PA3  - DISP_RX                   (alternate 7)
- * PA4  - UP_2                      (analog)
+ * PA4  - BTN_DOWN                  (analog) - (input)
  * PA5  - SPI1_SCK                  (alternate 5)
  * PA6  - SPI1_MISO                 (alternate 5)
  * PA7  - SPI1_MOSI                 (alternate 5)
@@ -353,10 +353,10 @@
  * PA13 - SWDIO                     (alternate 0)
  * PA14 - SWDCLK                    (alternate 0)
  */
-#define VAL_GPIOA_MODER             (PIN_MODE_ANALOG(GPIOA_UP_1)            | \
+#define VAL_GPIOA_MODER             (PIN_MODE_INPUT(GPIOA_BTN_UP)           | \
                                      PIN_MODE_ALTERNATE(GPIOA_DISP_TX)      | \
                                      PIN_MODE_ALTERNATE(GPIOA_DISP_RX)      | \
-                                     PIN_MODE_ANALOG(GPIOA_UP_2)            | \
+                                     PIN_MODE_INPUT(GPIOA_BTN_DOWN)         | \
                                      PIN_MODE_ALTERNATE(GPIOA_SPI1_SCK)     | \
                                      PIN_MODE_ALTERNATE(GPIOA_SPI1_MISO)    | \
                                      PIN_MODE_ALTERNATE(GPIOA_SPI1_MOSI)    | \
@@ -371,7 +371,9 @@
                                      PIN_OTYPE_PUSHPULL(GPIOA_SWDCLK))
 #define VAL_GPIOA_OSPEEDR           (PIN_OSPEED_HIGH(GPIOA_SWDIO)           | \
                                      PIN_OSPEED_HIGH(GPIOA_SWDCLK))
-#define VAL_GPIOA_PUPDR             (PIN_PUPDR_FLOATING(GPIOA_SWDIO)        | \
+#define VAL_GPIOA_PUPDR             (PIN_PUPDR_PULLUP(GPIOA_BTN_UP)         | \
+                                     PIN_PUPDR_PULLUP(GPIOA_BTN_DOWN)       | \
+                                     PIN_PUPDR_FLOATING(GPIOA_SWDIO)        | \
                                      PIN_PUPDR_FLOATING(GPIOA_SWDCLK))
 #define VAL_GPIOA_ODR               (PIN_ODR_HIGH(GPIOA_SWDIO)              | \
                                      PIN_ODR_HIGH(GPIOA_SWDCLK))
@@ -398,11 +400,11 @@
  * PB8  - DISP_LED2                 (alternate 2)
  * PB9  - DISP_LED1                 (alternate 2)
  */
-#define VAL_GPIOB_MODER             (PIN_MODE_ANALOG(GPIOB_DOWN_1)          | \
-                                     PIN_MODE_ANALOG(GPIOB_DOWN_2)          | \
-                                     PIN_MODE_ALTERNATE(GPIOB_DISP_LED4)    | \
-                                     PIN_MODE_ALTERNATE(GPIOB_DISP_LED3)    | \
-                                     PIN_MODE_ALTERNATE(GPIOB_DISP_LED2)    | \
+#define VAL_GPIOB_MODER             (PIN_MODE_ANALOG(GPIOB_LIFTING_SPEED_UP)   | \
+                                     PIN_MODE_ANALOG(GPIOB_LIFTING_SPEED_DOWN) | \
+                                     PIN_MODE_ALTERNATE(GPIOB_DISP_LED4)       | \
+                                     PIN_MODE_ALTERNATE(GPIOB_DISP_LED3)       | \
+                                     PIN_MODE_ALTERNATE(GPIOB_DISP_LED2)       | \
                                      PIN_MODE_ALTERNATE(GPIOB_DISP_LED1))
 #define VAL_GPIOB_OTYPER            0x00000000
 #define VAL_GPIOB_OSPEEDR           0xFFFFFFFF

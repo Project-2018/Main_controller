@@ -126,6 +126,8 @@ CSRC = $(STARTUPSRC) \
        $(STREAMSSRC) \
        $(SHELLSRC) \
        $(ESCCONTROLSRC) \
+       $(CHIBIOS)/os/various/evtimer.c \
+       $(CHIBIOS)/os/various/syscalls.c \
        main.c \
        console.c \
        usbcfg.c 
