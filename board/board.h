@@ -486,6 +486,8 @@
 #define VAL_GPIOE_OSPEEDR           0xFFFFFFFF
 #define VAL_GPIOE_PUPDR             (PIN_PUPDR_PULLUP(GPIOE_MEMS_INT1)      | \
                                      PIN_PUPDR_PULLUP(GPIOE_MEMS_INT2)      | \
+                                     PIN_PUPDR_PULLDOWN(GPIOE_UP_LED)       | \
+                                     PIN_PUPDR_PULLDOWN(GPIOE_DOWN_LED)     | \
                                      PIN_PUPDR_PULLUP(GPIOE_DISP_BUTT4)     | \
                                      PIN_PUPDR_PULLUP(GPIOE_DISP_BUTT3)     | \
                                      PIN_PUPDR_PULLUP(GPIOE_DISP_BUTT2)     | \

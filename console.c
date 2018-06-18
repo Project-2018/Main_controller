@@ -40,6 +40,9 @@ static const ShellConfig shell_cfg1 = {
 };
 
 void consoleInit(void){
+  palSetPadMode(GPIOA, 10, PAL_MODE_ALTERNATE(7) |
+      PAL_STM32_OSPEED_HIGHEST |
+      PAL_STM32_PUPDR_PULLUP);
 
   /* Shell initialization.*/
   sduObjectInit(&SDU1);
