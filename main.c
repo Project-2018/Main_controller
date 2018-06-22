@@ -31,9 +31,9 @@ static THD_FUNCTION(thread1, p) {
     systime_t time;
     time = 500;
 
-    //palSetPad(GPIOD, GPIOD_STAT_LED);
+    palSetPad(GPIOD, GPIOD_STAT_LED);
     chThdSleepMilliseconds(time/20);
-    //palClearPad(GPIOD, GPIOD_STAT_LED);
+    palClearPad(GPIOD, GPIOD_STAT_LED);
     chThdSleepMilliseconds(time);
 
   }

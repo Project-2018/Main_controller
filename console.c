@@ -29,7 +29,7 @@ event_listener_t shell_el;
 static const ShellCommand commands[] = {
   {"\r\n| ", NULL},
   {"clear", cmd_clear},
-  {"val",   cmd_val},
+//  {"val",   cmd_val},
 
   {NULL, NULL}
 };
