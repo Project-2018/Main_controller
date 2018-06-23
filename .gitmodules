@@ -1,3 +1,9 @@
 [submodule "submodules/ESC_control"]
 	path = submodules/ESC_control
 	url = https://github.com/Project-2018/ESC_control.git
+[submodule "submodules/gyro"]
+	path = submodules/gyro
+	url = https://github.com/Project-2018/gyro
+[submodule "submodules/battery"]
+	path = submodules/battery
+	url = https://github.com/Project-2018/battery

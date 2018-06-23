@@ -86,7 +86,8 @@ endif
 PROJECT = main_controller
 
 # Imported source files and paths
-CHIBIOS = ../../ChibiOS_18.2.0
+#CHIBIOS = ../../ChibiOS_18.2.0
+CHIBIOS = ../chibios1821
 
 include board/board.mk
 
@@ -105,9 +106,13 @@ include $(CHIBIOS)/test/rt/rt_test.mk
 include $(CHIBIOS)/test/oslib/oslib_test.mk
 include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 include $(CHIBIOS)/os/various/shell/shell.mk
+
 # Submodules.
 SUBMODULE = ./submodules
 include $(SUBMODULE)/ESC_control/esc_control.mk
+include $(SUBMODULE)/gyro/rollsensor.mk
+include $(SUBMODULE)/battery/batterymanager.mk
+
 # Other files (optional).
 
 # Define linker script file here
@@ -126,11 +131,15 @@ CSRC = $(STARTUPSRC) \
        $(STREAMSSRC) \
        $(SHELLSRC) \
        $(ESCCONTROLSRC) \
+       $(ROLLSENSSRC) \
+       $(BATTMANSRC) \
        $(CHIBIOS)/os/various/evtimer.c \
        $(CHIBIOS)/os/various/syscalls.c \
        main.c \
-       console.c \
-       usbcfg.c 
+       src/console.c \
+       src/measure.c \
+       src/calc.c \
+       src/usbcfg.c 
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -168,7 +177,10 @@ INCDIR = $(CHIBIOS)/os/license \
          $(CHIBIOS)/os/various/devices_lib/accel \
          $(CHIBIOS)/os/various \
          $(ESCCONTROLINC) \
-         os
+         $(ROLLSENSINC) \
+         $(BATTMANINC) \
+         os \
+         include
 
 #
 # Project, sources and paths
@@ -181,7 +193,8 @@ INCDIR = $(CHIBIOS)/os/license \
 MCU  = cortex-m4
 
 #TRGT = arm-elf-
-TRGT = /home/dani/GCC/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
+#TRGT = /home/dani/GCC/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
+TRGT = /home/richard/GCC/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
 CC   = $(TRGT)gcc
 CPPC = $(TRGT)g++
 # Enable loading with g++ only if you need C++ runtime support.

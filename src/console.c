@@ -13,6 +13,11 @@
 
 #include "bldc_interface.h"
 
+#include "rollsensor.h"
+#include "measure.h"
+#include "calc.h"
+#include "battery.h"
+
 #define usb_lld_connect_bus(usbp)
 #define usb_lld_disconnect_bus(usbp)
 
@@ -29,6 +34,9 @@ event_listener_t shell_el;
 static const ShellCommand commands[] = {
   {"\r\n| ", NULL},
   {"clear", cmd_clear},
+  {"gyro", cmd_gyro},
+  {"measvalues", cmd_measvalues},
+  {"batt", cmd_batt},
 //  {"val",   cmd_val},
 
   {NULL, NULL}
@@ -40,6 +48,8 @@ static const ShellConfig shell_cfg1 = {
 };
 
 void consoleInit(void){
+  shellInit();
+
   palSetPadMode(GPIOA, 10, PAL_MODE_ALTERNATE(7) |
       PAL_STM32_OSPEED_HIGHEST |
       PAL_STM32_PUPDR_PULLUP);
@@ -60,7 +70,6 @@ void consoleInit(void){
   usbStart(serusbcfg.usbp, &usbcfg);
   usbConnectBus(serusbcfg.usbp);
 
-  shellInit();
   chEvtRegister(&shell_terminated, &shell_el, 0);
 }
 
@@ -117,5 +126,87 @@ void cmd_val(BaseSequentialStream *chp, int argc, char *argv[]) {
     bldc_interface_get_values();
         
     chThdSleepMilliseconds(500);
+  }
+}
+
+void cmd_gyro(BaseSequentialStream *chp, int argc, char *argv[]) {
+  
+
+  (void)argv;
+
+  while (chnGetTimeout((BaseChannel *)chp, TIME_IMMEDIATE) == Q_TIMEOUT) {
+
+    chprintf(chp, "\x1B\x63");
+    chprintf(chp, "\x1B[2J");
+
+
+    chprintf(chp, "x: %d\r\n", GetXAxis());
+    chprintf(chp, "y: %d\r\n", GetYAxis());
+    chprintf(chp, "z: %d\r\n", GetZAxis());
+    chprintf(chp, "MonitoredAxis %d\r\n", GetMonitoredAxis());
+    chprintf(chp, "IsRollingDetected: %d\r\n", IsRollingDetected());
+
+    chThdSleepMilliseconds(200);
+
+  }
+}
+
+void cmd_measvalues(BaseSequentialStream *chp, int argc, char *argv[]) {
+  
+
+  (void)argv;
+
+  while (chnGetTimeout((BaseChannel *)chp, TIME_IMMEDIATE) == Q_TIMEOUT) {
+
+    chprintf(chp, "\x1B\x63");
+    chprintf(chp, "\x1B[2J");
+
+    chprintf(chp, "Measured ADC channels: \r\n");
+    chprintf(chp, "MEAS_CHG_VOLTAGE: \t%d\t%.2f\r\n", measGetValue(MEAS_CHG_VOLTAGE), GetChargeVoltage());
+    chprintf(chp, "MEAS_BATT_CURRENT: \t%d\t%.2f\r\n", measGetValue(MEAS_BATT_CURRENT), GetBatteryCurrent());
+    chprintf(chp, "MEAS_BATT_TEMP: \t%d\t%d\r\n", measGetValue(MEAS_BATT_TEMP), GetBatteryTemp());
+
+
+    chThdSleepMilliseconds(200);
+
+  }
+}
+
+void cmd_batt(BaseSequentialStream *chp, int argc, char *argv[]) {
+  
+
+  (void)argv;
+
+  while (chnGetTimeout((BaseChannel *)chp, TIME_IMMEDIATE) == Q_TIMEOUT) {
+
+    chprintf(chp, "\x1B\x63");
+    chprintf(chp, "\x1B[2J");
+
+
+    BatteryState_t state = GetBatteryState();
+
+    switch(state){
+      case BATTERY_DISCHARGE:
+        chprintf(chp, "Battery state: \t\tBATTERY_DISCHARGE\r\n");
+      break;
+      case BATTERY_RELAXED:
+        chprintf(chp, "Battery state: \t\tBATTERY_RELAXED\r\n");
+      break;
+      case BATTERY_CHARGE:
+        chprintf(chp, "Battery state: \t\tBATTERY_CHARGE\r\n");
+      break;
+      case BATTERY_CHARGE_FINISHED:
+        chprintf(chp, "Battery state: \t\tBATTERY_CHARGE_FINISHED\r\n");
+      break;
+    }
+
+    chprintf(chp, "ChargeTimeLeft: \t%d\r\n", GetChargeTimeLeftMin());
+    chprintf(chp, "StateOfCharge: \t\t%d\r\n", GetStateOfCharge());
+    chprintf(chp, "Charge voltage: \t%.2f\r\n", GetChargeVoltage());
+    chprintf(chp, "Battery current: \t%.2f\r\n", GetBatteryCurrent());
+
+
+    chThdSleepMilliseconds(200);
+
   }
 }

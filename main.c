@@ -18,6 +18,10 @@
 #include "hal.h"
 #include "esc_comm.h"
 #include "console.h"
+#include "rollsensor.h"
+#include "measure.h"
+#include "calc.h"
+#include "battery.h";
 
 /*
  * Blinker thread.
@@ -39,6 +43,37 @@ static THD_FUNCTION(thread1, p) {
   }
 }
 
+static const RollSensorConfig_t RollSenCfg = {
+  &SPID1,
+  GPIOE,
+  GPIOE_SPI1_CS,
+  X_AXIS,
+  0,
+  300,
+  100
+};
+
+float GetBattVoltage(void){
+  return 0.0f;
+}
+
+static BatteryConfig_t BattManCfg = {
+  {
+    30.0f, 31.32f, 10.88f, 32.64f, 35.28f, 36.6f, 37.92f, 39.24f, 40.56f, 41.88f, 43.2f
+  },
+  {
+    0.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 60.0f, 70.0f, 80.0f, 90.0f, 100.0f
+  },
+  0.5f,
+  10.7f,
+  43.0f,
+  100,
+  420,
+  GetBattVoltage,
+  GetBatteryCurrent,
+  GetChargeVoltage,
+};
+
 /*
  * Application entry point.
  */
@@ -59,10 +94,25 @@ int main(void) {
    */
   consoleInit();
 
+  /*
+   * Init ADC measures
+   */
+  InitMeasures();
+
+  /*
+   *  Init battery management module
+   */
+  InitBatteryManagement(&BattManCfg);
+
   /* 
    * Initialization of ESC controlling
    */
   ESC_ControlInit();
+
+  /*
+   *  Initialization of roll sensor
+   */
+  InitRollSensor(&RollSenCfg);
 
   /*
    * Creates the blinker thread.
