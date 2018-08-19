@@ -86,8 +86,8 @@ endif
 PROJECT = main_controller
 
 # Imported source files and paths
-#CHIBIOS = ../../ChibiOS_18.2.0
-CHIBIOS = ../chibios1821
+CHIBIOS = ../../ChibiOS_18.2.1
+#CHIBIOS = ../chibios1821
 
 include board/board.mk
 
@@ -139,7 +139,7 @@ CSRC = $(STARTUPSRC) \
        src/console.c \
        src/measure.c \
        src/calc.c \
-       src/usbcfg.c 
+       src/usbdrv.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -193,8 +193,8 @@ INCDIR = $(CHIBIOS)/os/license \
 MCU  = cortex-m4
 
 #TRGT = arm-elf-
-#TRGT = /home/dani/GCC/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
-TRGT = /home/richard/GCC/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
+TRGT = /home/dani/GCC/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
+#TRGT = /home/richard/GCC/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
 CC   = $(TRGT)gcc
 CPPC = $(TRGT)g++
 # Enable loading with g++ only if you need C++ runtime support.

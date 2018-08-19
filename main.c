@@ -22,6 +22,7 @@
 #include "measure.h"
 #include "calc.h"
 #include "battery.h";
+#include "usbdrv.h"
 
 /*
  * Blinker thread.
@@ -33,7 +34,9 @@ static THD_FUNCTION(thread1, p) {
   chRegSetThreadName("blinker");
   while (TRUE) {
     systime_t time;
-    time = 500;
+    //time = 500;
+    
+    time = usbdrvGetActive() ? 250 : 500;
 
     palSetPad(GPIOD, GPIOD_STAT_LED);
     chThdSleepMilliseconds(time/20);

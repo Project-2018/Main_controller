@@ -9,7 +9,7 @@
 #include "chprintf.h"
 
 #include "console.h"
-#include "usbcfg.h"
+#include "usbdrv.h"
 
 #include "bldc_interface.h"
 
@@ -17,6 +17,8 @@
 #include "measure.h"
 #include "calc.h"
 #include "battery.h"
+
+#include "esc_comm.h"
 
 #define usb_lld_connect_bus(usbp)
 #define usb_lld_disconnect_bus(usbp)
@@ -33,12 +35,12 @@ event_listener_t shell_el;
 /* Shell commands */
 static const ShellCommand commands[] = {
   {"\r\n| ", NULL},
-  {"clear", cmd_clear},
-  {"gyro", cmd_gyro},
+  {"clear",      cmd_clear},
+  {"gyro",       cmd_gyro},
   {"measvalues", cmd_measvalues},
-  {"batt", cmd_batt},
-//  {"val",   cmd_val},
-
+  {"batt",       cmd_batt},
+  {"val",        cmd_val},
+  {"btnVal",     cmd_escCommBtnValues},
   {NULL, NULL}
 };
 
@@ -50,37 +52,27 @@ static const ShellConfig shell_cfg1 = {
 void consoleInit(void){
   shellInit();
 
-  palSetPadMode(GPIOA, 10, PAL_MODE_ALTERNATE(7) |
-      PAL_STM32_OSPEED_HIGHEST |
-      PAL_STM32_PUPDR_PULLUP);
-
-  /* Shell initialization.*/
-  sduObjectInit(&SDU1);
-  sduStart(&SDU1, &serusbcfg);
-
+  usbdrvInit();
+  
   consoleThread = NULL;
-
-  /*
-   * Activates the USB driver and then the USB bus pull-up on D+.
-   * Note, a delay is inserted in order to not have to disconnect the cable
-   * after a reset.
-   */
-  usbDisconnectBus(serusbcfg.usbp);
-  chThdSleepMilliseconds(1500);
-  usbStart(serusbcfg.usbp, &usbcfg);
-  usbConnectBus(serusbcfg.usbp);
-
+  
   chEvtRegister(&shell_terminated, &shell_el, 0);
 }
 
 void consoleStart(void){
-  if (!consoleThread && (SDU1.config->usbp->state == USB_ACTIVE))
-    consoleThread = chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
-                                       "shell1", NORMALPRIO + 1,
-                                       shellThread, (void *)&shell_cfg1);
-  else if (chThdTerminatedX(consoleThread)) {
-    chThdRelease(consoleThread);    /* Recovers memory of the previous shell.   */
-    consoleThread = NULL;           /* Triggers spawning of a new shell.        */
+//  if (!consoleThread && (SDU1.config->usbp->state == USB_ACTIVE))
+//    consoleThread = chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
+//                                       "shell1", NORMALPRIO + 1,
+//                                       shellThread, (void *)&shell_cfg1);
+//  else if (chThdTerminatedX(consoleThread)) {
+//    chThdRelease(consoleThread);    /* Recovers memory of the previous shell.   */
+//    consoleThread = NULL;           /* Triggers spawning of a new shell.        */
+//  }
+  if (SDU1.config->usbp->state == USB_ACTIVE) {
+      thread_t *shelltp = chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
+                                              "shell", NORMALPRIO + 1,
+                                              shellThread, (void *)&shell_cfg1);
+      chThdWait(shelltp);               /* Waiting termination.             */
   }
 }
 
@@ -92,40 +84,31 @@ void cmd_clear(BaseSequentialStream *chp, int argc, char *argv[]){
   chprintf(chp, "\x1B[%d;%dH", 0, 0);
 }
 
-void bldc_val_received(mc_values *val){
-    chprintf((BaseSequentialStream*)&SDU1, "\r\n");
-    chprintf((BaseSequentialStream*)&SDU1, "Input voltage: %.2f V\r\n",    val->v_in);
-    chprintf((BaseSequentialStream*)&SDU1, "Temp:          %.2f degC\r\n", val->temp_pcb);
-    chprintf((BaseSequentialStream*)&SDU1, "Current motor: %.2f A\r\n",    val->current_motor);
-    chprintf((BaseSequentialStream*)&SDU1, "Current in:    %.2f A\r\n",    val->current_in);
-    chprintf((BaseSequentialStream*)&SDU1, "RPM:           %.1f RPM\r\n",  val->rpm);
-    chprintf((BaseSequentialStream*)&SDU1, "Duty cycle:    %.1f %%\r\n",   val->duty_now * 100.0);
-    chprintf((BaseSequentialStream*)&SDU1, "Ah Drawn:      %.4f Ah\r\n",   val->amp_hours);
-    chprintf((BaseSequentialStream*)&SDU1, "Ah Regen:      %.4f Ah\r\n",   val->amp_hours_charged);
-    chprintf((BaseSequentialStream*)&SDU1, "Wh Drawn:      %.4f Wh\r\n",   val->watt_hours);
-    chprintf((BaseSequentialStream*)&SDU1, "Wh Regen:      %.4f Wh\r\n",   val->watt_hours_charged);
-    chprintf((BaseSequentialStream*)&SDU1, "Tacho:         %i counts\r\n", val->tachometer);
-    chprintf((BaseSequentialStream*)&SDU1, "Tacho ABS:     %i counts\r\n", val->tachometer_abs);
-    chprintf((BaseSequentialStream*)&SDU1, "Fault Code:    %s\r\n", bldc_interface_fault_to_string(val->fault_code));
-}
-
 void cmd_val(BaseSequentialStream *chp, int argc, char *argv[]) {
   (void)argv;
   
-  if (argc > 0) {
-    chprintf(chp, "Usage: val\r\n");
-    return;
-  }
   while (chnGetTimeout((BaseChannel *)chp, TIME_IMMEDIATE) == Q_TIMEOUT) {
-    chprintf((BaseSequentialStream*)&SDU1, "\x1B\x63");
-    chprintf((BaseSequentialStream*)&SDU1, "\x1B[2J");
-    chprintf((BaseSequentialStream*)&SDU1, "\x1B[%d;%dH", 0, 0);
 
-    chprintf((BaseSequentialStream*)&SDU1, "Continuous reading of parameters... \r\n");
-    bldc_interface_set_rx_value_func(bldc_val_received);
-    bldc_interface_get_values();
+    chprintf(chp, "\x1B\x63");
+    chprintf(chp, "\x1B[2J");
+    chprintf(chp, "\x1B[%d;%dH", 0, 0);
+
+    chprintf(chp, "ESC parameters: \r\n");
+    chprintf(chp, "Input voltage: %0.2f\r\n" ,escGetVoltage()         );
+    chprintf(chp, "Temp:          %0.2f\r\n" ,escGetESCTemp()         );
+    chprintf(chp, "Current motor: %0.2f\r\n" ,escGetAcCurrent()       );
+    chprintf(chp, "Current in:    %0.2f\r\n" ,escGetDcCurrent()       );
+    chprintf(chp, "RPM:           %d\r\n" ,escGetERPM()            );
+    chprintf(chp, "Duty cycle:    %0.2f\r\n" ,escGetDutyCycle()       );
+    chprintf(chp, "Ah Drawn:      %0.4f\r\n" ,escGetAmpHours()        );
+    chprintf(chp, "Ah Regen:      %0.4f\r\n" ,escGetAmpHoursCharged() );
+    chprintf(chp, "Wh Drawn:      %0.4f\r\n" ,escGetWattHours()       );
+    chprintf(chp, "Wh Regen:      %0.4f\r\n" ,escGetWattHoursCharged());
+    chprintf(chp, "Tacho:         %d\r\n" ,escGetTachometer()      );
+    chprintf(chp, "Tacho ABS:     %d\r\n" ,escGetTachometerAbs()   );
+    chprintf(chp, "Fault Code:    %s\r\n", escGetFaultcode()       );
         
-    chThdSleepMilliseconds(500);
+    chThdSleepMilliseconds(10);
   }
 }
 
