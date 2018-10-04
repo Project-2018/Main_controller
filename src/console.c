@@ -17,6 +17,9 @@
 #include "measure.h"
 #include "calc.h"
 #include "battery.h"
+#include "rtc.h"
+#include "syslog.h"
+#include "eeprom.h"
 
 #include "esc_comm.h"
 
@@ -41,6 +44,11 @@ static const ShellCommand commands[] = {
   {"batt",       cmd_batt},
   {"val",        cmd_val},
   {"btnVal",     cmd_escCommBtnValues},
+  {"date",       cmd_date},
+  {"syslog",     cmd_GetSysLog},
+  {"storage",    cmd_storagetest},
+  {"reset",      cmd_reset},
+  {"machineid",  cmd_machineid},
   {NULL, NULL}
 };
 
@@ -185,11 +193,21 @@ void cmd_batt(BaseSequentialStream *chp, int argc, char *argv[]) {
 
     chprintf(chp, "ChargeTimeLeft: \t%d\r\n", GetChargeTimeLeftMin());
     chprintf(chp, "StateOfCharge: \t\t%d\r\n", GetStateOfCharge());
+    chprintf(chp, "Battery voltage: \t%.2f\r\n", (float)escGetVoltage());
     chprintf(chp, "Charge voltage: \t%.2f\r\n", GetChargeVoltage());
-    chprintf(chp, "Battery current: \t%.2f\r\n", GetBatteryCurrent());
+    chprintf(chp, "Battery current: \t%.2f %.2f\r\n", GetBatteryCurrent(), (float)escGetDcCurrent());
 
 
     chThdSleepMilliseconds(200);
 
   }
+}
+
+void cmd_reset(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argc;
+  (void)argv;
+
+  NVIC_SystemReset();
+
 }

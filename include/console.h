@@ -7,5 +7,6 @@ void consoleStart(void);
 void cmd_gyro(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_measvalues(BaseSequentialStream *chp, int argc, char *argv[]);
 void cmd_batt(BaseSequentialStream *chp, int argc, char *argv[]);
+void cmd_reset(BaseSequentialStream *chp, int argc, char *argv[]);
 
 #endif

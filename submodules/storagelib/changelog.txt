@@ -1,0 +1,17 @@
+*****************************************************************************
+*** Releases and Change Log                                               ***
+*****************************************************************************
+
+*** 1.1 ***
+- storagelib : Support for read only one record.
+- storagelib : Support for read a block (more record).
+- storagelib : Support for store a block.
+
+*** 1.0 ***
+- 24FCXXX:  Driver support page write operation.
+- storagelib : Support store only one record.
+- storagelib : Supports CRC16 checking.
+
+*** 0.1a ***
+- 24FCXXX:  Driver does not support page write. Works stable.
+- storagelib : First release.

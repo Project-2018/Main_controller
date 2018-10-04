@@ -368,7 +368,8 @@
                                      PIN_MODE_ALTERNATE(GPIOA_SWDIO)        | \
                                      PIN_MODE_ALTERNATE(GPIOA_SWDCLK))
 #define VAL_GPIOA_OTYPER            (PIN_OTYPE_PUSHPULL(GPIOA_SWDIO)        | \
-                                     PIN_OTYPE_PUSHPULL(GPIOA_SWDCLK))
+                                     PIN_OTYPE_PUSHPULL(GPIOA_SWDCLK)       | \
+                                     PIN_OTYPE_OPENDRAIN(GPIOA_I2C_C))
 #define VAL_GPIOA_OSPEEDR           (PIN_OSPEED_HIGH(GPIOA_SWDIO)           | \
                                      PIN_OSPEED_HIGH(GPIOA_SWDCLK))
 #define VAL_GPIOA_PUPDR             (PIN_PUPDR_PULLUP(GPIOA_BTN_UP)         | \
@@ -433,7 +434,7 @@
                                      PIN_MODE_ALTERNATE(GPIOC_I2C_D)        | \
                                      PIN_MODE_INPUT(GPIOC_OSC32IN)          | \
                                      PIN_MODE_INPUT(GPIOC_OSC32OUT))
-#define VAL_GPIOC_OTYPER            0x00000000
+#define VAL_GPIOC_OTYPER            PIN_OTYPE_OPENDRAIN(GPIOC_I2C_D)
 #define VAL_GPIOC_OSPEEDR           0xFFFFFFFF
 #define VAL_GPIOC_PUPDR             (PIN_PUPDR_FLOATING(GPIOC_OSC32IN)      | \
                                      PIN_PUPDR_FLOATING(GPIOC_OSC32OUT))
