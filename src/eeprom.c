@@ -13,12 +13,15 @@ struct StorageConfig config = {
 
 static MachineID_t MachineID;
 
+const MachineID_t DefaultMID = {
+  "0000000000"
+};
 
-void InitEeprom(void){
+uint8_t InitEeprom(void){
 
 	StorageLib_state_t init_res = InitStorage(&config);
 	if(init_res != STORAGELIB_ACTIVE){
-		//chSysHalt("EEPROM ERROR");
+    return init_res;
 	}
 
   AssignToMemoryMap(MACHINEID, (uint8_t*)&MachineID, sizeof(MachineID_t));
@@ -26,9 +29,10 @@ void InitEeprom(void){
   uint8_t res = ReadMapFromEeprom();
 
   if(res != STORAGELIB_OK){
-
+    memcpy(&MachineID, &DefaultMID, sizeof(MachineID_t));
   }
 
+  return init_res;
 }
 
 void cmd_storagetest(BaseSequentialStream *chp, int argc, char *argv[]) {
@@ -100,4 +104,8 @@ void cmd_machineid(BaseSequentialStream *chp, int argc, char *argv[]){
   }else{
     chprintf(chp, "Wrong command");
   }
+}
+
+char* GetMachineID(void){
+  return &MachineID.MachineSerialNumber[0];
 }

@@ -6,7 +6,7 @@ enum RecordNames{
 	MACHINEID			= 	0,
 	SYSLOG_POINTER		=	1,
 	SYSLOG_START		= 	2,
-	SYSLOG_END			=	10,
+	SYSLOG_END			=	60,
 	MAX_RECORD_NUMBER
 };
 

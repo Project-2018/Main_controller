@@ -24,6 +24,7 @@
 #include "battery.h";
 #include "usbdrv.h"
 #include "eeprom.h"
+#include "storageconf.h"
 
 /*
  * Blinker thread.
@@ -61,6 +62,10 @@ float GetBattVoltage(void){
   return (float)escGetVoltage();
 }
 
+float GetEscDcCurrent(void){
+  return (float)escGetDcCurrent();
+}
+
 static BatteryConfig_t BattManCfg = {
   {
     34.8f, 35.1f, 35.8f, 36.4f, 36.8f, 37.2f, 37.6f, 37.9f, 38.2f, 38.5f, 40.0f
@@ -74,7 +79,7 @@ static BatteryConfig_t BattManCfg = {
   100,
   420,
   GetBattVoltage,
-  GetBatteryCurrent,
+  GetEscDcCurrent,
   GetChargeVoltage,
 };
 
@@ -98,24 +103,22 @@ int main(void) {
   halInit();
   chSysInit();
 
-  InitEeprom();
+  palClearLine(LINE_SOLENOID);
+
+  uint8_t EepromInit = InitEeprom();
 
   /*
    * Shell manager initialization.
    */
   consoleInit();
 
-  SyslogInit((BaseSequentialStream *)&SDU1);
+  if(EepromInit == STORAGELIB_ACTIVE)
+    SyslogInit((BaseSequentialStream *)&SDU1);
 
   /*
    * Init ADC measures
    */
   InitMeasures();
-
-  /*
-   *  Init battery management module
-   */
-  InitBatteryManagement(&BattManCfg);
 
   /*
    *  Initialization of roll sensor
@@ -126,6 +129,11 @@ int main(void) {
    * Initialization of ESC controlling
    */
   ESC_ControlInit(&EscCtrlConf);
+
+  /*
+   *  Init battery management module
+   */
+  InitBatteryManagement(&BattManCfg);
 
   /*
    * Creates the blinker thread.

@@ -33,6 +33,11 @@ void SetTimeUnixSec(time_t unix_time) {
   rtcSetTime(&RTCD1, &timespec);
 }
 
+void SetDateTm(struct tm tim){
+  rtcConvertStructTmToDateTime(&tim, 0, &timespec);
+  rtcSetTime(&RTCD1, &timespec);  
+}
+
 /*
  * Console applet for date set and get
  */

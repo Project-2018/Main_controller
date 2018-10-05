@@ -2,6 +2,8 @@
 #include "hal.h"
 #include "measure.h"
 #include "calc.h"
+#include "esc_comm.h"
+#include "comm_uart.h"
 
 float BattCurr_CalibOUT[] = {
   -30.0f,
@@ -69,6 +71,43 @@ float BattCurr_CalibIN[] = {
 	2803.0f
 };
 
+float CurrWeight0_IN[] = {
+  0.2f,
+  2.0f
+};
+
+float CurrWeight0_OUT[] = {
+  0.0f,
+  10.0f
+};
+
+
+
+float CurrWeight1_IN[] = {
+  0.2f,
+  0.6f,
+  2.0f
+};
+
+float CurrWeight1_OUT[] = {
+  0.0f,
+  5.0f,
+  10.0f
+};
+
+
+
+float CurrWeight2_IN[] = {
+  0.2f,
+  2.0f
+};
+
+float CurrWeight2_OUT[] = {
+  0.0f,
+  10.0f
+};
+
+
 
 float CurrentmultiMap(float val, float* _in, float* _out, uint16_t size)
 {
@@ -95,6 +134,21 @@ float GetChargeVoltage(void){
 
 float GetBatteryCurrent(void){
 	return CurrentmultiMap((float)measGetValue(MEAS_BATT_CURRENT), &BattCurr_CalibIN[0], &BattCurr_CalibOUT[0], 30);
+}
+
+float GetLiftedWeightSpd0(void){
+  float ACcurrent = (float)escGetAcCurrent();
+  return CurrentmultiMap(ACcurrent, &CurrWeight0_IN[0], &CurrWeight0_OUT[0], 2);
+}
+
+float GetLiftedWeightSpd1(void){
+  float ACcurrent = (float)escGetAcCurrent();
+  return CurrentmultiMap(ACcurrent, &CurrWeight1_IN[0], &CurrWeight1_OUT[0], 3);
+}
+
+float GetLiftedWeightSpd2(void){
+  float ACcurrent = (float)escGetAcCurrent();
+  return CurrentmultiMap(ACcurrent, &CurrWeight2_IN[0], &CurrWeight2_OUT[0], 2);
 }
 
 int16_t GetBatteryTemp(void){

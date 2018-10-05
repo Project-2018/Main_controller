@@ -49,6 +49,7 @@ static const ShellCommand commands[] = {
   {"storage",    cmd_storagetest},
   {"reset",      cmd_reset},
   {"machineid",  cmd_machineid},
+  {"cpu",        cmd_GetCPUUsage},
   {NULL, NULL}
 };
 
@@ -183,6 +184,9 @@ void cmd_batt(BaseSequentialStream *chp, int argc, char *argv[]) {
       case BATTERY_RELAXED:
         chprintf(chp, "Battery state: \t\tBATTERY_RELAXED\r\n");
       break;
+      case BATTERY_BEGIN_CHRAGE:
+        chprintf(chp, "Battery state: \t\tBATTERY_BEGIN_CHRAGE\r\n");
+      break;
       case BATTERY_CHARGE:
         chprintf(chp, "Battery state: \t\tBATTERY_CHARGE\r\n");
       break;
@@ -209,5 +213,56 @@ void cmd_reset(BaseSequentialStream *chp, int argc, char *argv[]) {
   (void)argv;
 
   NVIC_SystemReset();
+
+}
+
+void cmd_GetCPUUsage(BaseSequentialStream *chp, int argc, char *argv[]){
+
+
+  (void)argc;
+  (void)argv;
+
+  chprintf(chp, "\x1B\x63");
+  chprintf(chp, "\x1B[2J");
+  thread_t *tp;
+  while (chnGetTimeout((BaseChannel *)chp, TIME_IMMEDIATE) == Q_TIMEOUT) {
+    chprintf(chp, "\x1B\x63");
+    chprintf(chp, "\x1B[2J");
+
+    chprintf(chp, "---   RUNNING TASKS   ---\r\n\r\n");
+
+    static const char *states[] = {CH_STATE_NAMES};
+
+    tp = chRegFirstThread();
+
+    uint32_t idle_time = 0;
+    uint32_t busy_time = 0;
+
+    do
+    {
+      uint32_t tmp = (tp->stats.cumulative/tp->stats.n);
+      if (tp->prio == 1) /* idle task */
+      {
+        idle_time = tmp;
+      }
+      else
+      {
+        busy_time += tmp;
+      }
+
+      chprintf(chp, "%.8lx %4lu \t %20ls %12ls %lu\r\n",
+               (uint32_t)tp,
+               (uint32_t)tp->prio,
+               tp->name,
+               states[tp->state],
+               tmp);
+      tp = chRegNextThread(tp);
+    } while (tp != NULL);
+    
+    chprintf(chp, "\r\nSystem load is %lu %%\r\n", (uint32_t)busy_time*100/(busy_time + idle_time));
+
+    chThdSleepMilliseconds(200);
+    
+  }
 
 }

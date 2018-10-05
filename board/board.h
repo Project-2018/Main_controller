@@ -132,7 +132,7 @@
 #define GPIOC_BATT_NTC              2U
 #define GPIOC_PIN3                  3U
 #define GPIOC_PIN4                  4U
-#define GPIOC_PIN5                  5U
+#define GPIOC_SOLENOID              5U
 #define GPIOC_SPEAKER               6U
 #define GPIOC_PIN7                  7U
 #define GPIOC_PIN8                  8U
@@ -274,6 +274,7 @@
 #define LINE_CHARGE_VOLT            PAL_LINE(GPIOC, 0U)
 #define LINE_CHARGE_CURR            PAL_LINE(GPIOC, 1U)
 #define LINE_BATT_NTC               PAL_LINE(GPIOC, 2U)
+#define LINE_SOLENOID               PAL_LINE(GPIOC, 5U)
 #define LINE_SPEAKER                PAL_LINE(GPIOC, 6U)
 #define LINE_I2C_D                  PAL_LINE(GPIOC, 9U)
 #define LINE_OSC32IN                PAL_LINE(GPIOC, 14U)
@@ -433,9 +434,11 @@
                                      PIN_MODE_ALTERNATE(GPIOC_SPEAKER)      | \
                                      PIN_MODE_ALTERNATE(GPIOC_I2C_D)        | \
                                      PIN_MODE_INPUT(GPIOC_OSC32IN)          | \
+                                     PIN_MODE_OUTPUT(GPIOC_SOLENOID)        | \
                                      PIN_MODE_INPUT(GPIOC_OSC32OUT))
-#define VAL_GPIOC_OTYPER            PIN_OTYPE_OPENDRAIN(GPIOC_I2C_D)
-#define VAL_GPIOC_OSPEEDR           0xFFFFFFFF
+#define VAL_GPIOC_OTYPER            (PIN_OTYPE_OPENDRAIN(GPIOC_I2C_D)   |\
+                                     PIN_OTYPE_PUSHPULL(GPIOC_SOLENOID))
+#define VAL_GPIOC_OSPEEDR           PIN_OSPEED_HIGH(GPIOC_SOLENOID)
 #define VAL_GPIOC_PUPDR             (PIN_PUPDR_FLOATING(GPIOC_OSC32IN)      | \
                                      PIN_PUPDR_FLOATING(GPIOC_OSC32OUT))
 #define VAL_GPIOC_ODR               0xFFFFFFFF
