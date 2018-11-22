@@ -262,7 +262,7 @@ void cmd_GetSysLog(BaseSequentialStream *chp, int argc, char *argv[]) {
   		chprintf(chp, "\x1B[2J");
   		uint16_t a;
   		for(a = 0; a < MAX_RECORD; a++){
-  			PrintRecord(a, WITH_SYSTIME);
+  			PrintRecord(a, SYSTIME_NO_COLOUR);
   		}
   	}
   	if(i == 1){

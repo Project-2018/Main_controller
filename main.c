@@ -25,6 +25,7 @@
 #include "usbdrv.h"
 #include "eeprom.h"
 #include "storageconf.h"
+#include "syslog.h"
 
 /*
  * Blinker thread.
@@ -105,6 +106,9 @@ int main(void) {
 
   palClearLine(LINE_SOLENOID);
 
+  /*
+   * Eeprom initialization.
+   */
   uint8_t EepromInit = InitEeprom();
 
   /*
@@ -112,6 +116,9 @@ int main(void) {
    */
   consoleInit();
 
+  /*
+   * Syslog initialization.
+   */
   if(EepromInit == STORAGELIB_ACTIVE)
     SyslogInit((BaseSequentialStream *)&SDU1);
 
@@ -139,6 +146,15 @@ int main(void) {
    * Creates the blinker thread.
    */
   chThdCreateStatic(thread1_wa, sizeof(thread1_wa), NORMALPRIO, thread1, NULL);
+
+  /*
+   * Welcome message
+   */
+  chThdSleepMilliseconds(1000);
+  ADD_SYSLOG(SYSLOG_INFO, "General", "Machine started. (%d, %.2fV, %dC)", GetStateOfCharge(), GetBattVoltage(), (int16_t)escGetESCTemp());
+
+  if(EepromInit != STORAGELIB_ACTIVE)
+    DoBeep();
 
   /* 
    * Main loop where only the shell is handled
