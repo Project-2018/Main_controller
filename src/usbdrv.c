@@ -6,6 +6,10 @@
 #include "usbdrv.h"
 #include "usbdescriptor.h"
 
+
+/* Virtual serial port over USB.*/
+SerialUSBDriver SDU1;
+
 /*
  * Handles the GET_DESCRIPTOR callback. All required descriptors must be
  * handled here.
@@ -173,13 +177,14 @@ void usbdrvInit(void){
 //      PAL_STM32_OSPEED_HIGHEST |
 //      PAL_STM32_PUPDR_PULLUP);
 
+/*
   palSetPadMode(GPIOA, 11, PAL_MODE_ALTERNATE(10) |
       PAL_STM32_OSPEED_HIGHEST |
       PAL_STM32_PUPDR_PULLUP);
   palSetPadMode(GPIOA, 12, PAL_MODE_ALTERNATE(10) |
       PAL_STM32_OSPEED_HIGHEST |
       PAL_STM32_PUPDR_PULLUP);
-
+*/
 
   /*
    * Activates the USB driver and then the USB bus pull-up on D+.

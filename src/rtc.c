@@ -20,6 +20,41 @@ void GetTimeTm(struct tm *timp) {
   rtcConvertDateTimeToStructTm(&timespec, timp, NULL);
 }
 
+uint16_t GetYear(void){
+  struct tm timp;
+  GetTimeTm(&timp);
+  uint16_t year = (uint16_t)(timp.tm_year + 1900);
+  return year;
+}
+
+uint8_t GetMonth(void){
+  struct tm timp;
+  GetTimeTm(&timp);
+  uint8_t month = (uint8_t)timp.tm_mon;
+  return month + 1;
+}
+
+uint8_t GetDay(void){
+  struct tm timp;
+  GetTimeTm(&timp);
+  uint8_t day = (uint8_t)timp.tm_mday;
+  return day;
+}
+
+uint8_t GetHour(void){
+  struct tm timp;
+  GetTimeTm(&timp);
+  uint8_t hour = (uint8_t)timp.tm_hour;
+  return hour;
+}
+
+uint8_t GetMin(void){
+  struct tm timp;
+  GetTimeTm(&timp);
+  uint8_t min = (uint8_t)timp.tm_min;
+  return min;
+}
+
 void SetTimeUnixSec(time_t unix_time) {
   struct tm tim;
   struct tm *canary;
@@ -47,6 +82,9 @@ void cmd_date(BaseSequentialStream *chp, int argc, char *argv[]) {
   time_t unix_time;
 
   if (argc == 0) {
+    chprintf(chp, "%d %d %d, %d %d", GetYear(), GetMonth(), GetDay(), GetHour(), GetMin());
+
+
     goto ERROR;
   }
 

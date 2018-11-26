@@ -22,10 +22,13 @@
 #include "measure.h"
 #include "calc.h"
 #include "battery.h";
-#include "usbdrv.h"
+#include "usbcfg.h"
 #include "eeprom.h"
 #include "storageconf.h"
 #include "syslog.h"
+
+#include "screenhandler.h"
+#include "serial_comm.h"
 
 /*
  * Blinker thread.
@@ -89,6 +92,11 @@ static EscControlConf_t EscCtrlConf = {
   IsRollingDetected
 };
 
+
+void DiagMode(void){
+
+}
+
 /*
  * Application entry point.
  */
@@ -111,10 +119,17 @@ int main(void) {
    */
   uint8_t EepromInit = InitEeprom();
 
+
+  /*
+   *  Init display communication
+   */
+  initSerialComm();
+
   /*
    * Shell manager initialization.
    */
   consoleInit();
+
 
   /*
    * Syslog initialization.
@@ -132,11 +147,6 @@ int main(void) {
    */
   InitRollSensor(&RollSenCfg);
 
-  /* 
-   * Initialization of ESC controlling
-   */
-  ESC_ControlInit(&EscCtrlConf);
-
   /*
    *  Init battery management module
    */
@@ -147,10 +157,32 @@ int main(void) {
    */
   chThdCreateStatic(thread1_wa, sizeof(thread1_wa), NORMALPRIO, thread1, NULL);
 
+  /* 
+   * Initialization of ESC controlling
+   */
+  ESC_ControlInit(&EscCtrlConf);
+
+
+  chThdSleepMilliseconds(1000);
+  if(usbdrvGetActive()){
+    
+    ADD_SYSLOG(SYSLOG_INFO, "General", "Diagnostic mode activated.");
+    while (true) {
+      consoleStart();
+      chThdSleepMilliseconds(1000);
+    }
+  }
+
+  /*
+   * Init display
+   */
+  
+  //sm_init();
+
   /*
    * Welcome message
    */
-  chThdSleepMilliseconds(1000);
+  chThdSleepMilliseconds(2000);
   ADD_SYSLOG(SYSLOG_INFO, "General", "Machine started. (%d, %.2fV, %dC)", GetStateOfCharge(), GetBattVoltage(), (int16_t)escGetESCTemp());
 
   if(EepromInit != STORAGELIB_ACTIVE)
@@ -160,7 +192,6 @@ int main(void) {
    * Main loop where only the shell is handled
    */
   while (true) {
-    consoleStart();
     chThdSleepMilliseconds(1000);
   }
 }

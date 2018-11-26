@@ -10,5 +10,11 @@ void SetDateTm(struct tm tim);
 
 time_t GetTimeUnixSec(void);
 
+uint16_t GetYear(void);
+uint8_t GetMonth(void);
+uint8_t GetDay(void);
+uint8_t GetHour(void);
+uint8_t GetMin(void);
+
 
 #endif

@@ -99,12 +99,14 @@ float CurrWeight1_OUT[] = {
 
 float CurrWeight2_IN[] = {
   0.2f,
-  2.0f
+  10.0f,
+  20.0f
 };
 
 float CurrWeight2_OUT[] = {
   0.0f,
-  10.0f
+  85.0f,
+  190.0f
 };
 
 
@@ -148,7 +150,7 @@ float GetLiftedWeightSpd1(void){
 
 float GetLiftedWeightSpd2(void){
   float ACcurrent = (float)escGetAcCurrent();
-  return CurrentmultiMap(ACcurrent, &CurrWeight2_IN[0], &CurrWeight2_OUT[0], 2);
+  return CurrentmultiMap(ACcurrent, &CurrWeight2_IN[0], &CurrWeight2_OUT[0], 3);
 }
 
 int16_t GetBatteryTemp(void){

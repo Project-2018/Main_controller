@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2006..2016 Giovanni Di Sirio
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,18 +14,14 @@
     limitations under the License.
 */
 
-#ifndef USBCFG_H
-#define USBCFG_H
+#include "ch.h"
+#include "hal.h"
 
-extern const USBConfig usbcfg;
-extern SerialUSBConfig epusbcfg1;
-extern SerialUSBConfig epusbcfg2;
-extern SerialUSBDriver SDU1;
+    uint8_t * getbuf (void);
+    void zerobuf(void);
+    uint8_t * buftostring (void);
+    void initSerialComm(void);
+    
 
-void usbdrvInit(void);
+    void sendbuf (uint8_t array[], uint8_t arraysz);
 
-bool usbdrvGetActive(void);
-
-#endif  /* USBCFG_H */
-
-/** @} */

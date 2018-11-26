@@ -112,6 +112,7 @@ SUBMODULE = ./submodules
 include $(SUBMODULE)/ESC_control/esc_control.mk
 include $(SUBMODULE)/gyro/rollsensor.mk
 include $(SUBMODULE)/battery/batterymanager.mk
+include $(SUBMODULE)/display/display.mk
 include $(SUBMODULE)/storagelib/storagelib.mk
 
 # Other files (optional).
@@ -135,15 +136,16 @@ CSRC = $(STARTUPSRC) \
        $(ROLLSENSSRC) \
        $(BATTMANSRC) \
        $(STORELIBSRC) \
+       $(DISPSRC) \
        $(CHIBIOS)/os/various/evtimer.c \
        $(CHIBIOS)/os/various/syscalls.c \
        main.c \
        src/console.c \
        src/measure.c \
        src/calc.c \
-       src/usbdrv.c \
        src/eeprom.c \
        src/rtc.c \
+       usbcfg/usbcfg.c \
        src/syslog.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
@@ -185,8 +187,10 @@ INCDIR = $(CHIBIOS)/os/license \
          $(ROLLSENSINC) \
          $(BATTMANINC) \
          $(STORELIBINC) \
+         $(DISPINC) \
          os \
-         include
+         include \
+         usbcfg
 
 #
 # Project, sources and paths

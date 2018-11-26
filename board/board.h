@@ -375,6 +375,8 @@
                                      PIN_OSPEED_HIGH(GPIOA_SWDCLK))
 #define VAL_GPIOA_PUPDR             (PIN_PUPDR_PULLUP(GPIOA_BTN_UP)         | \
                                      PIN_PUPDR_PULLUP(GPIOA_BTN_DOWN)       | \
+                                     PIN_PUPDR_PULLUP(GPIOA_ESC_TX)         | \
+                                     PIN_PUPDR_PULLUP(GPIOA_ESC_RX)       | \
                                      PIN_PUPDR_FLOATING(GPIOA_SWDIO)        | \
                                      PIN_PUPDR_FLOATING(GPIOA_SWDCLK))
 #define VAL_GPIOA_ODR               (PIN_ODR_HIGH(GPIOA_SWDIO)              | \

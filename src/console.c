@@ -9,7 +9,7 @@
 #include "chprintf.h"
 
 #include "console.h"
-#include "usbdrv.h"
+#include "usbcfg.h"
 
 #include "bldc_interface.h"
 
@@ -58,15 +58,41 @@ static const ShellConfig shell_cfg1 = {
   commands
 };
 
-void consoleInit(void){
-  shellInit();
 
-  usbdrvInit();
+void InitUsb(void){
+   /*
+   * Initializes two serial-over-USB CDC drivers.
+   */
+  sduObjectInit(&SDU1);
+  sduStart(&SDU1, &serusbcfg);
+
+  /*
+   * Activates the USB driver and then the USB bus pull-up on D+.
+   * Note, a delay is inserted in order to not have to disconnect the cable
+   * after a reset.
+   */
+  usbDisconnectBus(serusbcfg.usbp);
+  chThdSleepMilliseconds(1500);
+  usbStart(serusbcfg.usbp, &usbcfg);
+  usbConnectBus(serusbcfg.usbp); 
+}
+
+bool usbdrvGetActive(void) {
+  return serusbcfg.usbp->state == USB_ACTIVE ? TRUE : FALSE;
+}
+
+void consoleInit(void){
+
+  InitUsb();
+
+  shellInit();
   
   consoleThread = NULL;
   
   chEvtRegister(&shell_terminated, &shell_el, 0);
 }
+
+
 
 void consoleStart(void){
 //  if (!consoleThread && (SDU1.config->usbp->state == USB_ACTIVE))
