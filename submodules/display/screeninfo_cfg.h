@@ -10,7 +10,7 @@
 /*===========================================================================*/
 /* Function macros (NWL APIs).                                               */
 /*===========================================================================*/
-#define FetchMeasUnit() get_meas_unit()
+#define FetchMeasUnit() GetMeasUnit()
 #define FetchTiltState() IsRollingDetected()
 #define FetchOverTempState() IsEscInOverTemperature()
 #define FetchChargeState() IsBatteryInCharging()
@@ -29,7 +29,7 @@
 #define FetchMinute() GetMin()
 
 
-#define SetMeasUnit set_meas_unit
+#define SetMeasUnit EepromSetMeasUnit
 
 
 

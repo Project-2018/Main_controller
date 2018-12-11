@@ -297,13 +297,15 @@ void StateMachine_GetEvent(void) {
 
     //measunit
     else if (bufcmp(cb, rxbutton_config_metric)){
-      flush_buffer();
+      //flush_buffer();
+      zerobuf();
       screenvar.meas_unit = 1;
       measunit_changed = true;
     }
 
     else if (bufcmp(cb, rxbutton_config_imperial)){
-      flush_buffer();
+      //flush_buffer();
+      zerobuf();
       screenvar.meas_unit = 2;
       measunit_changed = true;
     }
@@ -312,7 +314,7 @@ void StateMachine_GetEvent(void) {
 }   
 
 //A thread that keeps the screen updated
-static THD_WORKING_AREA(ScreenhandlerTask_wa, 128);
+static THD_WORKING_AREA(ScreenhandlerTask_wa, 1024);
 static THD_FUNCTION(ScreenhandlerTask, p) {
 
   (void)p;
@@ -360,7 +362,7 @@ void sm_init(void){
 }
 
 void screen_fetch_info(void){ //get parameters
-    //screenvar.meas_unit          =    FetchMeasUnit();
+    screenvar.meas_unit          =    FetchMeasUnit();
     screenvar.overtilt           =    FetchTiltState();
     screenvar.overtemp           =    FetchOverTempState();
     screenvar.ischarging         =    FetchChargeState();
@@ -407,11 +409,11 @@ int tm_isdst     daylight savings indicator (1 = yes, 0 = no, -1 = unknown)
     SetDateTm(tim);
   }
   if(spd_changed == true){
-    spd_changed == false;
+    spd_changed = false;
     SetLiftingSpeed(screenvar.lift_speed);
   }
   if(measunit_changed == true){
-    measunit_changed == false;
+    measunit_changed = false;
     SetMeasUnit(screenvar.meas_unit);
   }
 }

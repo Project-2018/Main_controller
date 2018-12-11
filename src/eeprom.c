@@ -3,6 +3,7 @@
 #include "eeprom.h"
 #include "memorymap.h"
 #include "storageconf.h"
+#include "syslog.h"
 
 struct StorageConfig config = {
 	&I2CD3,
@@ -17,6 +18,10 @@ const MachineID_t DefaultMID = {
   "0000000000"
 };
 
+uint8_t MeasUnit = 1;
+
+uint32_t UptimeInMin = 0;
+
 uint8_t InitEeprom(void){
 
 	StorageLib_state_t init_res = InitStorage(&config);
@@ -25,14 +30,48 @@ uint8_t InitEeprom(void){
 	}
 
   AssignToMemoryMap(MACHINEID, (uint8_t*)&MachineID, sizeof(MachineID_t));
+  AssignToMemoryMap(MEASUNIT, (uint8_t*)&MeasUnit, sizeof(uint8_t));
+  AssignToMemoryMap(UPTIMEMIN, (uint8_t*)&UptimeInMin, sizeof(uint32_t));
+
 
   uint8_t res = ReadMapFromEeprom();
 
   if(res != STORAGELIB_OK){
     memcpy(&MachineID, &DefaultMID, sizeof(MachineID_t));
+    MeasUnit = 1;
+    UptimeInMin = 0;
   }
 
   return init_res;
+}
+
+uint8_t GetMeasUnit(void){
+  return MeasUnit;
+}
+
+uint8_t EepromSetMeasUnit(uint8_t val){
+  uint8_t old = MeasUnit;
+
+  if(val == 1)
+    MeasUnit = 1;
+
+  if(val == 2)
+    MeasUnit = 2;
+
+  uint8_t res = StoreRecordToEeprom(MEASUNIT);
+
+  if(res != STORAGELIB_OK){
+    ADD_SYSLOG(SYSLOG_ERROR, "EEPROM", "Failed to save meas unit: %d", MeasUnit);
+    MeasUnit = old;
+  }else{
+    ADD_SYSLOG(SYSLOG_INFO, "EEPROM", "Meas unit saved: %d", MeasUnit);
+  }
+
+  return MeasUnit;
+}
+
+uint32_t GetUptimeMin(void){
+  return UptimeInMin;
 }
 
 void cmd_storagetest(BaseSequentialStream *chp, int argc, char *argv[]) {

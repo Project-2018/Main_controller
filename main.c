@@ -39,13 +39,13 @@ static THD_FUNCTION(thread1, p) {
   (void)p;
   chRegSetThreadName("blinker");
   while (TRUE) {
-    systime_t time;
-    //time = 500;
+    uint16_t time;
+    time = 500;
     
     time = usbdrvGetActive() ? 250 : 500;
 
     palSetPad(GPIOD, GPIOD_STAT_LED);
-    chThdSleepMilliseconds(time/20);
+    chThdSleepMilliseconds(time / 10);
     palClearPad(GPIOD, GPIOD_STAT_LED);
     chThdSleepMilliseconds(time);
 
@@ -115,6 +115,11 @@ int main(void) {
   palClearLine(LINE_SOLENOID);
 
   /*
+   * Creates the blinker thread.
+   */
+  chThdCreateStatic(thread1_wa, sizeof(thread1_wa), NORMALPRIO, thread1, NULL);
+
+  /*
    * Eeprom initialization.
    */
   uint8_t EepromInit = InitEeprom();
@@ -147,27 +152,28 @@ int main(void) {
    */
   InitRollSensor(&RollSenCfg);
 
+  /* 
+   * Initialization of ESC controlling
+   */
+  ESC_ControlInit(&EscCtrlConf);
+
+
+  /*
+   *  Wait for ESC bootup
+   */
+  chThdSleepMilliseconds(3000);
+
   /*
    *  Init battery management module
    */
   InitBatteryManagement(&BattManCfg);
 
-  /*
-   * Creates the blinker thread.
-   */
-  chThdCreateStatic(thread1_wa, sizeof(thread1_wa), NORMALPRIO, thread1, NULL);
 
-  /* 
-   * Initialization of ESC controlling
-   */
-  ESC_ControlInit(&EscCtrlConf);
- sm_init();
-
-
-  chThdSleepMilliseconds(1000);
+  
   if(usbdrvGetActive()){
     
     ADD_SYSLOG(SYSLOG_INFO, "General", "Diagnostic mode activated.");
+    ADD_SYSLOG(SYSLOG_INFO, "General", "Machine started. (%d, %.2fV, %dC)", GetStateOfCharge(), GetBattVoltage(), (int16_t)escGetESCTemp());
     while (true) {
       consoleStart();
       chThdSleepMilliseconds(1000);
@@ -177,13 +183,12 @@ int main(void) {
   /*
    * Init display
    */
-  
+  sm_init();
  
 
   /*
    * Welcome message
    */
-  chThdSleepMilliseconds(2000);
   ADD_SYSLOG(SYSLOG_INFO, "General", "Machine started. (%d, %.2fV, %dC)", GetStateOfCharge(), GetBattVoltage(), (int16_t)escGetESCTemp());
 
   if(EepromInit != STORAGELIB_ACTIVE)
@@ -193,6 +198,6 @@ int main(void) {
    * Main loop where only the shell is handled
    */
   while (true) {
-    chThdSleepMilliseconds(1000);
+    chThdSleepMilliseconds(100);
   }
 }

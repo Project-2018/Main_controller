@@ -14,6 +14,11 @@ void cmd_machineid(BaseSequentialStream *chp, int argc, char *argv[]);
 
 char* GetMachineID(void);
 
+uint8_t GetMeasUnit(void);
+uint32_t GetUptimeMin(void);
+
+uint8_t EepromSetMeasUnit(uint8_t val);
+
 
 
 #endif

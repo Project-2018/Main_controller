@@ -69,7 +69,7 @@ static UARTConfig uart_cfg_1 = {
 	0
 };
 
-static THD_WORKING_AREA(SerialCommTask_wa, 128);
+static THD_WORKING_AREA(SerialCommTask_wa, 256);
 static THD_FUNCTION(SerialCommTask, p) {
  	(void)p;
 	chRegSetThreadName("SerialComm task");

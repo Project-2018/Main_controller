@@ -204,8 +204,8 @@ MCU  = cortex-m4
 
 #TRGT = arm-elf-
 #TRGT = /home/dani/GCC/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
-#TRGT = /home/richard/GCC/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
-TRGT = /Users/csabi/GCC/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
+TRGT = /home/richard/GCC/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
+#TRGT = /Users/csabi/GCC/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
 CC   = $(TRGT)gcc
 CPPC = $(TRGT)g++
 # Enable loading with g++ only if you need C++ runtime support.

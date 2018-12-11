@@ -4,8 +4,10 @@
 
 enum RecordNames{
 	MACHINEID			= 	0,
-	SYSLOG_POINTER		=	1,
-	SYSLOG_START		= 	2,
+	MEASUNIT			= 	1,
+	UPTIMEMIN			=	2,
+	SYSLOG_POINTER		=	3,
+	SYSLOG_START		= 	4,
 	SYSLOG_END			=	60,
 	MAX_RECORD_NUMBER
 };
