@@ -23,6 +23,9 @@
 
 #include "esc_comm.h"
 
+#include "screenhandler.h"
+#include "data_display.h"
+
 #define usb_lld_connect_bus(usbp)
 #define usb_lld_disconnect_bus(usbp)
 
@@ -47,6 +50,17 @@ static const ShellCommand commands[] = {
   {"date",       cmd_date},
   {"syslog",     cmd_GetSysLog},
   {"storage",    cmd_storagetest},
+
+  {"smtest",     cmd_SMTest},
+  {"sote",     cmd_set_overtemp},
+  {"cote",     cmd_clear_overtemp},
+  {"soti",     cmd_set_overtilt},
+  {"coti",     cmd_clear_overtilt},
+  {"sow",     cmd_set_overweight},
+  {"cow",     cmd_clear_overweight},
+  {"sch",     cmd_set_charging},
+  {"cch",     cmd_clear_charging},
+
   {"reset",      cmd_reset},
   {"machineid",  cmd_machineid},
   {"cpu",        cmd_GetCPUUsage},
@@ -231,6 +245,86 @@ void cmd_batt(BaseSequentialStream *chp, int argc, char *argv[]) {
     chThdSleepMilliseconds(200);
 
   }
+}
+
+void cmd_SMTest(BaseSequentialStream *chp, int argc, char *argv[]){
+    (void)argc;
+    (void)argv;
+
+    screen_variables scv;
+    uint8_t c;
+    c = 0x00;
+    while (chnGetTimeout((BaseChannel *)chp, TIME_IMMEDIATE) == Q_TIMEOUT) {
+      scv = getvariables();
+
+      chprintf(chp, "\x1B\x63");
+      chprintf(chp, "\x1B[2J");
+      chprintf(chp, "--Set values--\r\n");
+      chprintf(chp, "Liftspd:  %d\r\n",       scv.lift_speed);
+      chprintf(chp, "Tiltd:    %d\r\n",         scv.overtilt);
+      chprintf(chp, "OTemp:    %d\r\n",         scv.overtemp);
+      chprintf(chp, "OWeight:  %d\r\n",       scv.overweight);
+      chprintf(chp, "Charging: %d\r\n",       scv.ischarging);
+      chprintf(chp, "Meas_U:   %d\r\n",        scv.meas_unit);
+      chprintf(chp, "Bat_lv:   %d\r\n",    scv.battery_level);
+      chprintf(chp, "CHG_rem:  %d\r\n", scv.charge_remaining);
+      chprintf(chp, "Date: %d",                scv.date_yyyy);
+      chprintf(chp, "/%d",                       scv.date_mm);
+      chprintf(chp, "/%d\r\n",                   scv.date_dd);
+      chprintf(chp, "Time:%d",                   scv.time_hh);
+      chprintf(chp, ":%d\r\n",                   scv.time_mm);
+
+      chThdSleepMilliseconds(200);
+  } 
+}
+
+void cmd_set_overtemp(BaseSequentialStream *chp, int argc, char *argv[]){
+    (void)argc;
+    (void)argv;
+    setovertempstate(true);
+}
+
+void cmd_clear_overtemp(BaseSequentialStream *chp, int argc, char *argv[]){
+    (void)argc;
+    (void)argv;
+    setovertempstate(false);
+}
+
+void cmd_set_overtilt(BaseSequentialStream *chp, int argc, char *argv[]){
+    (void)argc;
+    (void)argv;
+    setovertiltstate(true);
+}
+
+void cmd_clear_overtilt(BaseSequentialStream *chp, int argc, char *argv[]){
+    (void)argc;
+    (void)argv;
+    setovertiltstate(false);
+}
+
+void cmd_set_overweight(BaseSequentialStream *chp, int argc, char *argv[]){
+    (void)argc;
+    (void)argv;
+    setoverweightstate(true);
+}
+
+void cmd_clear_overweight(BaseSequentialStream *chp, int argc, char *argv[]){
+    (void)argc;
+    (void)argv;
+    setoverweightstate(false);
+}
+
+void cmd_set_charging(BaseSequentialStream *chp, int argc, char *argv[]){
+    (void)argc;
+    (void)argv;
+    setchargestate(true);
+}
+
+void cmd_clear_charging(BaseSequentialStream *chp, int argc, char *argv[]){
+    (void)argc;
+    (void)argv;
+    setchargestate(false);
+
 }
 
 void cmd_reset(BaseSequentialStream *chp, int argc, char *argv[]) {

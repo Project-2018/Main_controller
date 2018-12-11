@@ -14,6 +14,7 @@
 #define FetchTiltState() IsRollingDetected()
 #define FetchOverTempState() IsEscInOverTemperature()
 #define FetchChargeState() IsBatteryInCharging()
+//#define FetchChargeState() get_charge_state();
 #define FetchOverWeightState() IsInOverWeightState()
 #define FetchLiftedWeight() GetLiftedWeightKg()
 #define FetchBatteryLevel() GetStateOfCharge()
@@ -26,6 +27,10 @@
 #define FetchDay() GetDay()
 #define FetchHour() GetHour()
 #define FetchMinute() GetMin()
+
+
+#define SetMeasUnit set_meas_unit
+
 
 
 #endif

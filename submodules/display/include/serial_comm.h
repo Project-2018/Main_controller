@@ -1,3 +1,6 @@
+#ifndef SCREENHANDLER_H_INCLUDED
+#define SCREENHANDLER_H_INCLUDED
+
 /*
     ChibiOS - Copyright (C) 2006..2016 Giovanni Di Sirio
 
@@ -14,14 +17,10 @@
     limitations under the License.
 */
 
-#include "ch.h"
-#include "hal.h"
-
     uint8_t * getbuf (void);
     void zerobuf(void);
     uint8_t * buftostring (void);
     void initSerialComm(void);
+    void sendbuf (uint8_t *array, uint8_t arraysz);
     
-
-    void sendbuf (uint8_t array[], uint8_t arraysz);
-
+#endif

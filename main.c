@@ -21,7 +21,7 @@
 #include "rollsensor.h"
 #include "measure.h"
 #include "calc.h"
-#include "battery.h";
+#include "battery.h"
 #include "usbcfg.h"
 #include "eeprom.h"
 #include "storageconf.h"
@@ -161,6 +161,7 @@ int main(void) {
    * Initialization of ESC controlling
    */
   ESC_ControlInit(&EscCtrlConf);
+ sm_init();
 
 
   chThdSleepMilliseconds(1000);
@@ -177,7 +178,7 @@ int main(void) {
    * Init display
    */
   
-  //sm_init();
+ 
 
   /*
    * Welcome message
