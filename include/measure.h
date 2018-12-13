@@ -2,7 +2,7 @@
 #define MEASURE_H_INCLUDED
 
 
-#define SAMPLE_FREQUENCY_MS		10
+#define SAMPLE_FREQUENCY_MS		100
 #define ADC_GRP1_BUF_DEPTH      16
 
 enum measChannels

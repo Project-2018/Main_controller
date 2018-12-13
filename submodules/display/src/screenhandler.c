@@ -27,7 +27,7 @@
 #include "esc_comm.h"
 
 
-#define TIMING_TASK   10
+#define TIMING_TASK   20
 #define TIMING_1     100
 #define TIMING_2     250
 #define TIMING_3   10000
@@ -76,14 +76,16 @@ void refresh_chg_remaining(void){
     if(screenvar.ischarging == true){
       uint16_t chg_h_rem = 0;
       uint16_t chg_m_rem = 0;
+      
+
       if(screenvar.charge_remaining !=0){
         chg_h_rem = screenvar.charge_remaining / 60;
         if(chg_h_rem > 99) 
           chg_h_rem = 99;
         chg_m_rem = screenvar.charge_remaining - (chg_h_rem * 60);
-        display_send(chg_remaining_hour[chg_h_rem]);
-        display_send(chg_remaining_min[chg_m_rem]);
       }
+      //display_send(chg_remaining_hour[chg_h_rem]);
+      //display_send(chg_remaining_min[chg_m_rem]);
     }
 }
 
@@ -107,6 +109,7 @@ void StateMachine_GetEvent(void) {
     uint8_t *cb = getbuf();
 
     //Charge event (L1 -Most important)
+    
     if(screenvar.ischarging == true && charge_flag == false){
       charge_flag = true;
       display_send(&screen_charge);
@@ -314,7 +317,7 @@ void StateMachine_GetEvent(void) {
 }   
 
 //A thread that keeps the screen updated
-static THD_WORKING_AREA(ScreenhandlerTask_wa, 1024);
+static THD_WORKING_AREA(ScreenhandlerTask_wa, 2048);
 static THD_FUNCTION(ScreenhandlerTask, p) {
 
   (void)p;
@@ -353,13 +356,14 @@ static THD_FUNCTION(ScreenhandlerTask, p) {
     } else {
         tm2++;
     }
-    chThdSleepMilliseconds(10);
+    chThdSleepMilliseconds(20);
   }
 }
 
 void sm_init(void){
-    chThdCreateStatic(ScreenhandlerTask_wa, sizeof(ScreenhandlerTask_wa), NORMALPRIO + 9, ScreenhandlerTask, NULL);
+    chThdCreateStatic(ScreenhandlerTask_wa, sizeof(ScreenhandlerTask_wa), NORMALPRIO, ScreenhandlerTask, NULL);
 }
+
 
 void screen_fetch_info(void){ //get parameters
     screenvar.meas_unit          =    FetchMeasUnit();

@@ -72,41 +72,73 @@ float BattCurr_CalibIN[] = {
 };
 
 float CurrWeight0_IN[] = {
-  0.2f,
-  2.0f
+  5.5f,
+  10.0f,
+  12.5f,
+  15.0f,
+  18.0f,
+  20.5f,
+  25.5f,
+  29.0f
 };
 
 float CurrWeight0_OUT[] = {
   0.0f,
-  10.0f
+  103.0f,
+  150.0f,
+  200.0f,
+  250.0f,
+  300.0f,
+  382.0f,
+  453.0f
 };
 
 
 
 float CurrWeight1_IN[] = {
-  0.2f,
-  0.6f,
-  2.0f
+  5.5f,
+  10.0f,
+  12.5f,
+  15.0f,
+  18.0f,
+  20.5f,
+  25.5f,
+  29.0f
 };
 
 float CurrWeight1_OUT[] = {
   0.0f,
-  5.0f,
-  10.0f
+  103.0f,
+  150.0f,
+  200.0f,
+  250.0f,
+  300.0f,
+  382.0f,
+  453.0f
 };
 
 
 
 float CurrWeight2_IN[] = {
-  0.2f,
+  5.5f,
   10.0f,
-  20.0f
+  12.5f,
+  15.0f,
+  18.0f,
+  20.5f,
+  25.5f,
+  29.0f
 };
 
 float CurrWeight2_OUT[] = {
   0.0f,
-  85.0f,
-  190.0f
+  103.0f,
+  150.0f,
+  200.0f,
+  250.0f,
+  300.0f,
+  382.0f,
+  453.0f
 };
 
 
@@ -140,17 +172,17 @@ float GetBatteryCurrent(void){
 
 float GetLiftedWeightSpd0(void){
   float ACcurrent = (float)escGetAcCurrent();
-  return CurrentmultiMap(ACcurrent, &CurrWeight0_IN[0], &CurrWeight0_OUT[0], 2);
+  return CurrentmultiMap(ACcurrent, &CurrWeight0_IN[0], &CurrWeight0_OUT[0], 7);
 }
 
 float GetLiftedWeightSpd1(void){
   float ACcurrent = (float)escGetAcCurrent();
-  return CurrentmultiMap(ACcurrent, &CurrWeight1_IN[0], &CurrWeight1_OUT[0], 3);
+  return CurrentmultiMap(ACcurrent, &CurrWeight1_IN[0], &CurrWeight1_OUT[0], 7);
 }
 
 float GetLiftedWeightSpd2(void){
   float ACcurrent = (float)escGetAcCurrent();
-  return CurrentmultiMap(ACcurrent, &CurrWeight2_IN[0], &CurrWeight2_OUT[0], 3);
+  return CurrentmultiMap(ACcurrent, &CurrWeight2_IN[0], &CurrWeight2_OUT[0], 7);
 }
 
 int16_t GetBatteryTemp(void){

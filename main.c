@@ -171,7 +171,7 @@ int main(void) {
 
   
   if(usbdrvGetActive()){
-    
+    //SetEscMaintenence();
     ADD_SYSLOG(SYSLOG_INFO, "General", "Diagnostic mode activated.");
     ADD_SYSLOG(SYSLOG_INFO, "General", "Machine started. (%d, %.2fV, %dC)", GetStateOfCharge(), GetBattVoltage(), (int16_t)escGetESCTemp());
     while (true) {

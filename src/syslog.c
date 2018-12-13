@@ -10,6 +10,8 @@
 #include "memorymap.h"
 #include "storageconf.h"
 
+#include "eeprom.h"
+
 
 static LogRecord_t Records[MAX_RECORD];
 
@@ -260,6 +262,7 @@ void cmd_GetSysLog(BaseSequentialStream *chp, int argc, char *argv[]) {
   		ReadBlockFromEeprom(SYSLOG_START, SYSLOG_END);
   		chprintf(chp, "\x1B\x63");
   		chprintf(chp, "\x1B[2J");
+  		chprintf(chp, "Uptime in minutes: %d", *GetUptimeMin());
   		uint16_t a;
   		for(a = 0; a < MAX_RECORD; a++){
   			PrintRecord(a, SYSTIME_NO_COLOUR);

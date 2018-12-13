@@ -117,9 +117,9 @@ static THD_FUNCTION(SampleThread, arg) {
       	avg = CurrLPApply((float)avg);
       }
 
-      chSysLock();
+      //chSysLock();
       measValue[ch] = avg;
-      chSysUnlock();
+      //chSysUnlock();
     }
 
 

@@ -38,8 +38,13 @@ uint8_t InitEeprom(void){
 
   if(res != STORAGELIB_OK){
     memcpy(&MachineID, &DefaultMID, sizeof(MachineID_t));
+    StoreRecordToEeprom(MACHINEID);
+    
     MeasUnit = 1;
+    StoreRecordToEeprom(MEASUNIT);
+    
     UptimeInMin = 0;
+    StoreRecordToEeprom(UPTIMEMIN);
   }
 
   return init_res;
@@ -70,8 +75,27 @@ uint8_t EepromSetMeasUnit(uint8_t val){
   return MeasUnit;
 }
 
-uint32_t GetUptimeMin(void){
-  return UptimeInMin;
+uint32_t* GetUptimeMin(void){
+  return &UptimeInMin;
+}
+
+void cmd_setuptime(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argc;
+  (void)argv;
+
+  uint32_t val = atoi(argv[0]);
+  UptimeInMin = val;
+
+  uint8_t res = StoreRecordToEeprom(UPTIMEMIN);
+
+  if(res != STORAGELIB_OK){
+    ADD_SYSLOG(SYSLOG_ERROR, "EEPROM", "Failed to save uptime: %d", UptimeInMin);
+    chprintf(chp, "Uptime failed to save!\r\n");
+  }else{
+    ADD_SYSLOG(SYSLOG_INFO, "EEPROM", "Uptime saved: %d", MeasUnit);
+    chprintf(chp, "Uptime changed to: %d\r\n", UptimeInMin);
+  }
 }
 
 void cmd_storagetest(BaseSequentialStream *chp, int argc, char *argv[]) {

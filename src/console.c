@@ -64,6 +64,7 @@ static const ShellCommand commands[] = {
   {"reset",      cmd_reset},
   {"machineid",  cmd_machineid},
   {"cpu",        cmd_GetCPUUsage},
+  {"setuptime",  cmd_setuptime},
   {NULL, NULL}
 };
 
