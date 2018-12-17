@@ -10,4 +10,7 @@ float GetLiftedWeightSpd0(void);
 float GetLiftedWeightSpd1(void);
 float GetLiftedWeightSpd2(void);
 
+void InitAcCurrentFilter(float smpfreq, float cutoff);
+void CalcFilteredACcurrent(void);
+
 #endif

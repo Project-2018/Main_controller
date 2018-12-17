@@ -4,6 +4,7 @@
 #include "calc.h"
 #include "esc_comm.h"
 #include "comm_uart.h"
+#include "lpfilter.h"
 
 float BattCurr_CalibOUT[] = {
   -30.0f,
@@ -141,7 +142,8 @@ float CurrWeight2_OUT[] = {
   453.0f
 };
 
-
+LPfilter_t AcCurrentFilter;
+float FilteredACcurrent = 0.0f;
 
 float CurrentmultiMap(float val, float* _in, float* _out, uint16_t size)
 {
@@ -170,19 +172,24 @@ float GetBatteryCurrent(void){
 	return CurrentmultiMap((float)measGetValue(MEAS_BATT_CURRENT), &BattCurr_CalibIN[0], &BattCurr_CalibOUT[0], 30);
 }
 
+void CalcFilteredACcurrent(void){
+  FilteredACcurrent = LPApply(&AcCurrentFilter, (float)escGetAcCurrent());
+}
+
+void InitAcCurrentFilter(float smpfreq, float cutoff){
+  LP_set_cutoff_frequency(&AcCurrentFilter, smpfreq, cutoff);
+}
+
 float GetLiftedWeightSpd0(void){
-  float ACcurrent = (float)escGetAcCurrent();
-  return CurrentmultiMap(ACcurrent, &CurrWeight0_IN[0], &CurrWeight0_OUT[0], 7);
+  return CurrentmultiMap(FilteredACcurrent, &CurrWeight0_IN[0], &CurrWeight0_OUT[0], 8);
 }
 
 float GetLiftedWeightSpd1(void){
-  float ACcurrent = (float)escGetAcCurrent();
-  return CurrentmultiMap(ACcurrent, &CurrWeight1_IN[0], &CurrWeight1_OUT[0], 7);
+  return CurrentmultiMap(FilteredACcurrent, &CurrWeight1_IN[0], &CurrWeight1_OUT[0], 8);
 }
 
 float GetLiftedWeightSpd2(void){
-  float ACcurrent = (float)escGetAcCurrent();
-  return CurrentmultiMap(ACcurrent, &CurrWeight2_IN[0], &CurrWeight2_OUT[0], 7);
+  return CurrentmultiMap(FilteredACcurrent, &CurrWeight2_IN[0], &CurrWeight2_OUT[0], 8);
 }
 
 int16_t GetBatteryTemp(void){

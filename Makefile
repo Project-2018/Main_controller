@@ -146,6 +146,7 @@ CSRC = $(STARTUPSRC) \
        src/eeprom.c \
        src/rtc.c \
        usbcfg/usbcfg.c \
+       submodules/lowpassfilter/lpfilter.c \
        src/syslog.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
@@ -190,7 +191,8 @@ INCDIR = $(CHIBIOS)/os/license \
          $(DISPINC) \
          os \
          include \
-         usbcfg
+         usbcfg \
+         submodules/lowpassfilter
 
 #
 # Project, sources and paths

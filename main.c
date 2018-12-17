@@ -80,7 +80,7 @@ static BatteryConfig_t BattManCfg = {
   0.2f,
   10.7f,
   43.0f,
-  100,
+  200,
   420,
   GetBattVoltage,
   GetEscDcCurrent,

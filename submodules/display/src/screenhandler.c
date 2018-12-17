@@ -72,20 +72,43 @@ void refresh_bat(void){
   display_send(&battery[bat_level]);
 }
 
+uint16_t last_chg_h_rem = 99;
+uint16_t last_chg_m_rem = 0;
+
 void refresh_chg_remaining(void){
     if(screenvar.ischarging == true){
+
       uint16_t chg_h_rem = 0;
       uint16_t chg_m_rem = 0;
-      
 
-      if(screenvar.charge_remaining !=0){
+      if(screenvar.charge_remaining != 0){
         chg_h_rem = screenvar.charge_remaining / 60;
         if(chg_h_rem > 99) 
           chg_h_rem = 99;
         chg_m_rem = screenvar.charge_remaining - (chg_h_rem * 60);
+
+        if(last_chg_h_rem != chg_h_rem)
+          display_send(chg_remaining_hour[chg_h_rem]);
+
+        if(last_chg_m_rem != chg_m_rem)
+          display_send(chg_remaining_min[chg_m_rem]);
+
+        last_chg_m_rem = chg_m_rem;
+        last_chg_h_rem = chg_h_rem;
+      }else{
+
+        if(last_chg_h_rem != chg_h_rem)
+          display_send(chg_remaining_hour[0]);
+
+        if(last_chg_m_rem != chg_m_rem)
+          display_send(chg_remaining_min[0]);
+
+        last_chg_m_rem = 0;
+        last_chg_h_rem = 0;        
       }
-      //display_send(chg_remaining_hour[chg_h_rem]);
-      //display_send(chg_remaining_min[chg_m_rem]);
+
+    }else{
+      last_chg_h_rem = 99;
     }
 }
 

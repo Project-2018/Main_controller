@@ -122,7 +122,11 @@ void consoleStart(void){
       thread_t *shelltp = chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
                                               "shell", NORMALPRIO + 1,
                                               shellThread, (void *)&shell_cfg1);
-      chThdWait(shelltp);               /* Waiting termination.             */
+      chEvtWaitAny(EVENT_MASK(0));
+      if (chThdTerminatedX(shelltp)) {
+        chThdRelease(shelltp);
+        shelltp = NULL;
+      }
   }
 }
 
