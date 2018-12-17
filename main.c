@@ -58,8 +58,9 @@ static const RollSensorConfig_t RollSenCfg = {
   GPIOE_SPI1_CS,
   X_AXIS,
   0,
-  300,
-  100
+  400,
+  100,
+  50
 };
 
 float GetBattVoltage(void){
@@ -92,11 +93,6 @@ static EscControlConf_t EscCtrlConf = {
   IsRollingDetected
 };
 
-
-void DiagMode(void){
-
-}
-
 /*
  * Application entry point.
  */
@@ -124,7 +120,6 @@ int main(void) {
    */
   uint8_t EepromInit = InitEeprom();
 
-
   /*
    *  Init display communication
    */
@@ -134,7 +129,6 @@ int main(void) {
    * Shell manager initialization.
    */
   consoleInit();
-
 
   /*
    * Syslog initialization.
@@ -157,7 +151,6 @@ int main(void) {
    */
   ESC_ControlInit(&EscCtrlConf);
 
-
   /*
    *  Wait for ESC bootup
    */
@@ -169,7 +162,9 @@ int main(void) {
   InitBatteryManagement(&BattManCfg);
 
 
-  
+  /*
+   *  If USB is active (plugged) go to diagnostic mode
+   */  
   if(usbdrvGetActive()){
     //SetEscMaintenence();
     ADD_SYSLOG(SYSLOG_INFO, "General", "Diagnostic mode activated.");
@@ -185,7 +180,6 @@ int main(void) {
    */
   sm_init();
  
-
   /*
    * Welcome message
    */

@@ -6,6 +6,9 @@
 #include "comm_uart.h"
 #include "lpfilter.h"
 
+#include <stdio.h>
+#include <math.h>
+
 float BattCurr_CalibOUT[] = {
   -30.0f,
   -25.0f,
@@ -181,15 +184,30 @@ void InitAcCurrentFilter(float smpfreq, float cutoff){
 }
 
 float GetLiftedWeightSpd0(void){
-  return CurrentmultiMap(FilteredACcurrent, &CurrWeight0_IN[0], &CurrWeight0_OUT[0], 8);
+  float weight = CurrentmultiMap(FilteredACcurrent, &CurrWeight0_IN[0], &CurrWeight0_OUT[0], 8);
+  
+  float temp = weight / 10.0f;
+  temp = round(temp);
+  temp *= 10;
+  return temp;
 }
 
 float GetLiftedWeightSpd1(void){
-  return CurrentmultiMap(FilteredACcurrent, &CurrWeight1_IN[0], &CurrWeight1_OUT[0], 8);
+  float weight = CurrentmultiMap(FilteredACcurrent, &CurrWeight1_IN[0], &CurrWeight1_OUT[0], 8);
+
+  float temp = weight / 10.0f;
+  temp = round(temp);
+  temp *= 10;
+  return temp;
 }
 
 float GetLiftedWeightSpd2(void){
-  return CurrentmultiMap(FilteredACcurrent, &CurrWeight2_IN[0], &CurrWeight2_OUT[0], 8);
+  float weight = CurrentmultiMap(FilteredACcurrent, &CurrWeight2_IN[0], &CurrWeight2_OUT[0], 8);
+
+  float temp = weight / 10.0f;
+  temp = round(temp);
+  temp *= 10;
+  return temp;
 }
 
 int16_t GetBatteryTemp(void){
