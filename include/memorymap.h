@@ -8,10 +8,11 @@ enum RecordNames{
 	UPTIMEMIN			=	2,
 	SYSLOG_POINTER		=	3,
 	SYSLOG_START		= 	4,
-	SYSLOG_END			=	60,
+	SYSLOG_END			=	380,
 	MAX_RECORD_NUMBER
 };
 
+//MAX 400
 
 
 #endif

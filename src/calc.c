@@ -76,73 +76,77 @@ float BattCurr_CalibIN[] = {
 };
 
 float CurrWeight0_IN[] = {
-  5.5f,
-  10.0f,
-  12.5f,
-  15.0f,
-  18.0f,
-  20.5f,
-  25.5f,
-  29.0f
+  6.75f,
+  8.0f,
+  11.5f,
+  14.5f,
+  15.8f,
+  19.3f,
+  21.6f
 };
 
 float CurrWeight0_OUT[] = {
   0.0f,
-  103.0f,
+  30.0f,
+  90.0f,
   150.0f,
-  200.0f,
+  190.0f,
   250.0f,
-  300.0f,
-  382.0f,
-  453.0f
+  310.0f
 };
 
+/*
 
+  0 kg -  6.75A
+ 30 kg -  8A
+ 90 kg -  11.5A
+150 kg -  14.5A 
+180 kg -  15.8A
+240 kg -  19.3A
+300 kg -  21.6A
+
+*/
 
 float CurrWeight1_IN[] = {
-  5.5f,
-  10.0f,
-  12.5f,
-  15.0f,
-  18.0f,
-  20.5f,
-  25.5f,
-  29.0f
+  6.75f,
+  8.0f,
+  11.5f,
+  14.5f,
+  15.8f,
+  19.3f,
+  21.6f
 };
 
 float CurrWeight1_OUT[] = {
   0.0f,
-  103.0f,
+  30.0f,
+  90.0f,
   150.0f,
-  200.0f,
+  190.0f,
   250.0f,
-  300.0f,
-  382.0f,
-  453.0f
+  310.0f
 };
 
 
 
 float CurrWeight2_IN[] = {
-  5.5f,
-  10.0f,
-  12.5f,
-  15.0f,
-  18.0f,
-  20.5f,
-  25.5f,
-  29.0f
+  6.75f,
+  8.0f,
+  11.5f,
+  14.5f,
+  15.8f,
+  19.3f,
+  21.6f
 };
 
 float CurrWeight2_OUT[] = {
   0.0f,
-  103.0f,
+  30.0f,
+  90.0f,
   150.0f,
-  200.0f,
+  190.0f,
   250.0f,
-  300.0f,
-  382.0f,
-  453.0f
+  310.0f
 };
 
 LPfilter_t AcCurrentFilter;
@@ -184,7 +188,7 @@ void InitAcCurrentFilter(float smpfreq, float cutoff){
 }
 
 float GetLiftedWeightSpd0(void){
-  float weight = CurrentmultiMap(FilteredACcurrent, &CurrWeight0_IN[0], &CurrWeight0_OUT[0], 8);
+  float weight = CurrentmultiMap(FilteredACcurrent, &CurrWeight0_IN[0], &CurrWeight0_OUT[0], 7);
   
   float temp = weight / 10.0f;
   temp = round(temp);
@@ -193,7 +197,7 @@ float GetLiftedWeightSpd0(void){
 }
 
 float GetLiftedWeightSpd1(void){
-  float weight = CurrentmultiMap(FilteredACcurrent, &CurrWeight1_IN[0], &CurrWeight1_OUT[0], 8);
+  float weight = CurrentmultiMap(FilteredACcurrent, &CurrWeight1_IN[0], &CurrWeight1_OUT[0], 7);
 
   float temp = weight / 10.0f;
   temp = round(temp);
@@ -202,7 +206,7 @@ float GetLiftedWeightSpd1(void){
 }
 
 float GetLiftedWeightSpd2(void){
-  float weight = CurrentmultiMap(FilteredACcurrent, &CurrWeight2_IN[0], &CurrWeight2_OUT[0], 8);
+  float weight = CurrentmultiMap(FilteredACcurrent, &CurrWeight2_IN[0], &CurrWeight2_OUT[0], 7);
 
   float temp = weight / 10.0f;
   temp = round(temp);

@@ -162,7 +162,7 @@ void cmd_val(BaseSequentialStream *chp, int argc, char *argv[]) {
     chprintf(chp, "Tacho ABS:     %d\r\n" ,escGetTachometerAbs()   );
     chprintf(chp, "Fault Code:    %s\r\n", escGetFaultcode()       );
         
-    chThdSleepMilliseconds(10);
+    chThdSleepMilliseconds(100);
   }
 }
 

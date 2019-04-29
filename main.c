@@ -56,9 +56,9 @@ static const RollSensorConfig_t RollSenCfg = {
   &SPID1,
   GPIOE,
   GPIOE_SPI1_CS,
-  X_AXIS,
+  Y_AXIS,
   0,
-  400,
+  150,
   100,
   50
 };
@@ -80,7 +80,7 @@ static BatteryConfig_t BattManCfg = {
   },
   0.2f,
   10.7f,
-  43.0f,
+  42.5f,
   200,
   420,
   GetBattVoltage,
@@ -183,7 +183,7 @@ int main(void) {
   /*
    * Welcome message
    */
-  ADD_SYSLOG(SYSLOG_INFO, "General", "Machine started. (%d, %.2fV, %dC)", GetStateOfCharge(), GetBattVoltage(), (int16_t)escGetESCTemp());
+  //ADD_SYSLOG(SYSLOG_INFO, "General", "Machine started. (%d, %.2fV, %dC)", GetStateOfCharge(), GetBattVoltage(), (int16_t)escGetESCTemp());
 
   if(EepromInit != STORAGELIB_ACTIVE)
     DoBeep();

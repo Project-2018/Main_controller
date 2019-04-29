@@ -260,9 +260,9 @@ void cmd_GetSysLog(BaseSequentialStream *chp, int argc, char *argv[]) {
   	if(i == 0){
   		chprintf(chp, "Loading syslog...\r\n");
   		ReadBlockFromEeprom(SYSLOG_START, SYSLOG_END);
-  		chprintf(chp, "\x1B\x63");
-  		chprintf(chp, "\x1B[2J");
-  		chprintf(chp, "Uptime in minutes: %d", *GetUptimeMin());
+//  		chprintf(chp, "\x1B\x63");
+//  		chprintf(chp, "\x1B[2J");
+  		chprintf(chp, "Uptime in minutes: %d\r\n", *GetUptimeMin());
   		uint16_t a;
   		for(a = 0; a < MAX_RECORD; a++){
   			PrintRecord(a, SYSTIME_NO_COLOUR);
