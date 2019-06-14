@@ -80,6 +80,8 @@
 
 	void SaveSyslog(void);
 
+	void FormatSyslog(BaseSequentialStream *chp);
+
 
 #define ADD_SYSLOG(D, X, Y, ...) AddRecord(D, X, Y, ##__VA_ARGS__);
 
