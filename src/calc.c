@@ -84,7 +84,8 @@ float CurrWeight0_IN[] = {
   19.3f,
   21.6f,
   26.0f,
-  32.0f
+  32.0f,
+  33.0f
 };
 
 float CurrWeight0_OUT[] = {
@@ -96,7 +97,8 @@ float CurrWeight0_OUT[] = {
   250.0f,
   310.0f,
   400.0f,
-  500.0f
+  500.0f,
+  520.0f
 };
 
 /*
@@ -120,7 +122,8 @@ float CurrWeight1_IN[] = {
   19.3f,
   21.6f,
   26.0f,
-  32.0f
+  32.0f,
+  33.0f
 };
 
 float CurrWeight1_OUT[] = {
@@ -132,7 +135,8 @@ float CurrWeight1_OUT[] = {
   250.0f,
   310.0f,
   400.0f,
-  500.0f
+  500.0f,
+  520.0f
 };
 
 
@@ -146,7 +150,8 @@ float CurrWeight2_IN[] = {
   19.3f,
   21.6f,
   26.0f,
-  32.0f
+  32.0f,
+  33.0f
 };
 
 float CurrWeight2_OUT[] = {
@@ -158,7 +163,8 @@ float CurrWeight2_OUT[] = {
   250.0f,
   310.0f,
   400.0f,
-  500.0f
+  500.0f,
+  520.0f
 };
 
 LPfilter_t AcCurrentFilter;
@@ -200,7 +206,7 @@ void InitAcCurrentFilter(float smpfreq, float cutoff){
 }
 
 float GetLiftedWeightSpd0(void){
-  float weight = CurrentmultiMap(FilteredACcurrent, &CurrWeight0_IN[0], &CurrWeight0_OUT[0], 9);
+  float weight = CurrentmultiMap(FilteredACcurrent, &CurrWeight0_IN[0], &CurrWeight0_OUT[0], 10);
   
   float temp = weight / 10.0f;
   temp = round(temp);
@@ -209,7 +215,7 @@ float GetLiftedWeightSpd0(void){
 }
 
 float GetLiftedWeightSpd1(void){
-  float weight = CurrentmultiMap(FilteredACcurrent, &CurrWeight1_IN[0], &CurrWeight1_OUT[0], 9);
+  float weight = CurrentmultiMap(FilteredACcurrent, &CurrWeight1_IN[0], &CurrWeight1_OUT[0], 4);
 
   float temp = weight / 10.0f;
   temp = round(temp);
@@ -218,7 +224,7 @@ float GetLiftedWeightSpd1(void){
 }
 
 float GetLiftedWeightSpd2(void){
-  float weight = CurrentmultiMap(FilteredACcurrent, &CurrWeight2_IN[0], &CurrWeight2_OUT[0], 9);
+  float weight = CurrentmultiMap(FilteredACcurrent, &CurrWeight2_IN[0], &CurrWeight2_OUT[0], 10);
 
   float temp = weight / 10.0f;
   temp = round(temp);
